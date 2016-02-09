@@ -7,12 +7,11 @@ organization := "de.heikoseeberger"
 name         := "sbt-fresh"
 licenses     += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
 
-scalaVersion   := "2.11.7"
 scalacOptions ++= Vector(
   "-unchecked",
   "-deprecation",
   "-language:_",
-  "-target:jvm-1.8",
+  "-target:jvm-1.6",
   "-encoding", "UTF-8"
 )
 
@@ -25,6 +24,9 @@ libraryDependencies ++= Vector(
 )
 
 initialCommands := """|import de.heikoseeberger.sbtfresh._""".stripMargin
+
+sbtPlugin         := true
+publishMavenStyle := false
 
 git.useGitDescribe := true
 
