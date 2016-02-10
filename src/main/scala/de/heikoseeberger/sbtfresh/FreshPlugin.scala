@@ -26,11 +26,11 @@ object FreshPlugin extends AutoPlugin {
 
   object autoImport {
 
-    val freshOrganization = settingKey[String](s"""Project organization; "$FreshOrganization" by default""")
+    val freshAuthor = settingKey[String](s"""Author – value of "user.name" sys prop or "$FreshAuthor" by default""")
 
-    val freshName = settingKey[String](s"""Project name; name of base directory by default""")
+    val freshName = settingKey[String](s"""Build name – name of build directory by default""")
 
-    val freshAuthor = settingKey[String](s"""Author; value of "user.name" sys prop or "$FreshAuthor" by default""")
+    val freshOrganization = settingKey[String](s"""Build organization – "$FreshOrganization" by default""")
   }
 
   private final val FreshOrganization = "default"

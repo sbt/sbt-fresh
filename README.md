@@ -1,6 +1,26 @@
 # sbt-fresh #
 
-Welcome to sbt-fresh!
+sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which is already prepared for multiple modules: It creates an sbt build according to established best practices, creates a useful package object for the root package, initializes a Git repository and creates an initial commit, etc.
+
+Add sbt-fresh to your global plugins definition, which most probably resides under `~/.sbt/0.13/plugins/plugins.sbt`:
+
+``` scala
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "0.1.0")
+```
+
+You can define the following settings in your global build definition, which most probably sits at `~/.sbt/0.13/build.sbt`:
+
+``` scala
+import de.heikoseeberger.sbtfresh.FreshPlugin.autoImport._
+freshAuthor       := "Heiko Seeberger"   // Author – value of "user.name" sys prop or "default" by default
+freshName         := "no-idea"           // Build name – name of build directory by default
+freshOrganization := "de.heikoseeberger" // Build organization – "default" by default
+```
+
+In order to scaffold a fresh sbt project, just start sbt in an empty directory. Then call the `fresh` command, optionally passing one or more of the following arguments which override the respective settings:
+- `author`
+- `name`
+- `organization`
 
 ## Contribution policy ##
 
