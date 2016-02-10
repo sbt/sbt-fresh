@@ -28,6 +28,12 @@ initialCommands := """|import de.heikoseeberger.sbtfresh._""".stripMargin
 sbtPlugin         := true
 publishMavenStyle := false
 
+scriptedSettings
+scriptedLaunchOpts := scriptedLaunchOpts.value ++ Vector(
+  "-Xmx1024M",
+  s"-Dplugin.version=${version.value}"
+)
+
 git.useGitDescribe := true
 
 import scalariform.formatter.preferences._
