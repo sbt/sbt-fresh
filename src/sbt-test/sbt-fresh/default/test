@@ -9,3 +9,4 @@ $ exists NOTICE
 $ exists src/main/scala/org/acme/package.scala
 $ exists project/plugins.sbt
 $ exists README.md
+> checkInitialCommit

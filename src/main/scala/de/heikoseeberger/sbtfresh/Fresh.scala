@@ -18,46 +18,26 @@ package de.heikoseeberger.sbtfresh
 
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
+import org.eclipse.jgit.api.Git
 
-object Fresh {
-
-  sealed trait Arg
-  object Arg {
-    case class Organization(organization: String) extends Arg
-    case class Name(name: String) extends Arg
-    case class Author(author: String) extends Arg
-  }
-}
-
-private class Fresh(
-    baseDir: Path,
-    setOrganization: String,
-    setName: String,
-    setAuthor: String,
-    args: Seq[Fresh.Arg]
-) {
-  import Fresh._
-
-  private val organization = args
-    .collectFirst { case Arg.Organization(organization) => organization }
-    .getOrElse(setOrganization)
-
-  private val name = args
-    .collectFirst { case Arg.Name(name) => name }
-    .getOrElse(setName)
-
-  private val author = args
-    .collectFirst { case Arg.Author(author) => author }
-    .getOrElse(setAuthor)
+private class Fresh(buildDir: Path, organization: String, name: String, author: String) {
+  require(organization.nonEmpty, "organization must not be empty!")
+  require(name.nonEmpty, "name must not be empty!")
 
   private val packageSegments = {
     val segments = (organization.segments ++ name.segments).map(_.toLowerCase)
-    val (tail, init) = segments
+    val (tail, _) = segments
       .tail
       .zip(segments)
       .filter { case (s1, s2) => s1 != s2 }
       .unzip
-    init.head +: tail
+    segments.head +: tail
+  }
+
+  def initialCommit(): Unit = {
+    val git = Git.init().setDirectory(buildDir.toFile).call()
+    git.add().addFilepattern(".").call()
+    git.commit().setMessage("Fresh project, created with sbt-fresh").call()
   }
 
   def writeBuildProperties(): Path = write("project/build.properties", Template.buildProperties)
@@ -84,7 +64,7 @@ private class Fresh(
   def writeReadme(): Path = write("README.md", Template.readme(name))
 
   private def write(path: String, content: String) = {
-    val resolvedPath = baseDir.resolve(path)
+    val resolvedPath = buildDir.resolve(path)
     if (resolvedPath.getParent != null) Files.createDirectories(resolvedPath.getParent)
     Files.write(resolvedPath, content.getBytes(UTF_8))
   }
