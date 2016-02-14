@@ -33,11 +33,10 @@ private object Template {
         |name := "$name"
         |
         |libraryDependencies ++= Vector(
-        |  Library.scalaCheck % "test",
-        |  Library.scalaTest  % "test"
+        |  Library.scalaCheck % "test"
         |)
         |
-        |initialCommands := $TQ|import ${`package`}
+        |initialCommands := $TQ|import ${`package`}._
         |                      |$TQ.stripMargin
         |""".stripMargin
   }
@@ -93,13 +92,11 @@ private object Template {
        |
        |object Version {
        |  final val Scala      = "2.11.7"
-       |  final val ScalaCheck = "1.12.5"
-       |  final val ScalaTest  = "2.2.6"
+       |  final val ScalaCheck = "1.13.0"
        |}
        |
        |object Library {
        |  val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.ScalaCheck
-       |  val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.ScalaTest
        |}""".stripMargin
 
   def gitignore: String =
