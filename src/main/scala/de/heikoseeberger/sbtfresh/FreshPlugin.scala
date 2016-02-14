@@ -36,7 +36,7 @@ object FreshPlugin extends AutoPlugin {
     final val SetUpGit = "setUpGit"
   }
 
-  case class Args(organization: Option[String], name: Option[String], author: Option[String], setUpGit: Option[Boolean])
+  private case class Args(organization: Option[String], name: Option[String], author: Option[String], setUpGit: Option[Boolean])
 
   private final val FreshOrganization = "default"
   private final val FreshAuthor = "default"
@@ -58,9 +58,9 @@ object FreshPlugin extends AutoPlugin {
   private def parser(state: State) = {
     import DefaultParsers._
     def arg[A](name: String, parser: Parser[A]) = Space ~> name.decapitalize ~> "=" ~> parser
-    val args = arg(Arg.Organization, StringBasic).? ~
-      arg(Arg.Name, StringBasic).? ~
-      arg(Arg.Author, StringBasic).? ~
+    val args = arg(Arg.Organization, NotQuoted).? ~
+      arg(Arg.Name, NotQuoted).? ~
+      arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
       arg(Arg.SetUpGit, Bool).?
     args.map { case o ~ n ~ a ~ g => Args(o, n, a, g) }
   }
