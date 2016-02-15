@@ -85,7 +85,8 @@ private object Template {
         |    // Header settings
         |    HeaderKey.headers := Map("scala" -> Apache2_0("2016", "$author"))
         |  )
-        |}""".stripMargin
+        |}
+        |""".stripMargin
 
   def dependencies: String =
     """|import sbt._
@@ -97,7 +98,8 @@ private object Template {
        |
        |object Library {
        |  val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.ScalaCheck
-       |}""".stripMargin
+       |}
+       |""".stripMargin
 
   def gitignore: String =
     """|# sbt
@@ -371,7 +373,8 @@ private object Template {
         |  type Iterable[+A] = scala.collection.immutable.Iterable[A]
         |  type Seq[+A] = scala.collection.immutable.Seq[A]
         |  type IndexedSeq[+A] = scala.collection.immutable.IndexedSeq[A]
-        |}""".stripMargin
+        |}
+        |""".stripMargin
   }
 
   def plugins: String =
