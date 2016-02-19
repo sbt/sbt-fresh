@@ -42,9 +42,8 @@ private object Template {
   }
 
   def buildScala(organization: String, author: String): String =
-    s"""|import com.typesafe.sbt.GitPlugin
-        |import com.typesafe.sbt.SbtScalariform
-        |import de.heikoseeberger.sbtheader.{ HeaderKey, HeaderPlugin }
+    s"""|import com.typesafe.sbt.{ GitPlugin, SbtScalariform }
+        |import de.heikoseeberger.sbtheader.HeaderPlugin
         |import de.heikoseeberger.sbtheader.license.Apache2_0
         |import sbt._
         |import sbt.plugins.JvmPlugin
@@ -53,7 +52,7 @@ private object Template {
         |
         |object Build extends AutoPlugin {
         |
-        |  override def requires = JvmPlugin && HeaderPlugin && GitPlugin
+        |  override def requires = JvmPlugin && HeaderPlugin && GitPlugin && SbtScalariform
         |
         |  override def trigger = allRequirements
         |
@@ -83,7 +82,7 @@ private object Template {
         |    GitPlugin.autoImport.git.useGitDescribe := true,
         |
         |    // Header settings
-        |    HeaderKey.headers := Map("scala" -> Apache2_0("2016", "$author"))
+        |    HeaderPlugin.autoImport.headers := Map("scala" -> Apache2_0("2016", "$author"))
         |  )
         |}
         |""".stripMargin
