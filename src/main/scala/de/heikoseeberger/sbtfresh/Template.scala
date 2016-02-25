@@ -19,7 +19,7 @@ package de.heikoseeberger.sbtfresh
 private object Template {
 
   def buildProperties: String =
-    """|sbt.version = 0.13.9
+    """|sbt.version = 0.13.11
        |""".stripMargin
 
   def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
