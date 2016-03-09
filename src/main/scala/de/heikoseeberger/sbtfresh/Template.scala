@@ -91,7 +91,7 @@ private object Template {
     """|import sbt._
        |
        |object Version {
-       |  final val Scala      = "2.11.7"
+       |  final val Scala      = "2.11.8"
        |  final val ScalaCheck = "1.13.0"
        |}
        |
