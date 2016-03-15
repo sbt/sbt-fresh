@@ -63,6 +63,8 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
 
   def writeReadme(): Path = write("README.md", Template.readme(name))
 
+  def writeShellPrompt(): Path = write("shell-prompt.sbt", Template.shellPrompt)
+
   private def write(path: String, content: String) = {
     val resolvedPath = buildDir.resolve(path)
     if (resolvedPath.getParent != null) Files.createDirectories(resolvedPath.getParent)

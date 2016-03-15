@@ -85,6 +85,7 @@ object FreshPlugin extends AutoPlugin {
     fresh.writePackage()
     fresh.writePlugins()
     fresh.writeReadme()
+    fresh.writeShellPrompt()
 
     if (setUpGit) fresh.initialCommit()
 
