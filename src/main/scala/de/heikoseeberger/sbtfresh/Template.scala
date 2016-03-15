@@ -395,4 +395,8 @@ private object Template {
         |
         |This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
         |""".stripMargin
+
+  def shellPrompt: String =
+    """|shellPrompt.in(ThisBuild) := (state => s"[${Project.extract(state).currentRef.project}]> ")
+       |""".stripMargin
 }
