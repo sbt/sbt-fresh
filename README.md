@@ -24,6 +24,29 @@ In order to scaffold a fresh sbt project, just start sbt in an empty directory. 
 - `organization`
 - `setUpGit`
 
+## Layout
+
+sbt-fresh creates a project with the following layout:
+
+```
++ .gitignore
++ build.sbt             // specific settings for (single) module
++ NOTICE
++ project
+--+ build.properties    // sbt version
+--+ Build.scala         // common settings for all modules
+--+ Dependencies.scala  // values for library dependencies
+--+ plugins.sbt         // sbt-git, sbt-header, sbt-scalariform
++ README.md
++ shell-prompt.sbt      // show project id
++ src
+--+ main
+----+ resources
+------+ LICENSE         // Apache 2 license
+----+ scala
+------+ package.scala   // type aliases repoining `Seq` and friends to immutable
+```
+
 ## Contribution policy ##
 
 Contributions via GitHub pull requests are gladly accepted from their original author. Along with any pull requests, please state that the contribution is your original work and that you license the work to the project under the project's open source license. Whether or not you state this explicitly, by submitting any copyrighted material via pull request, email, or other means you agree to license the material under the project's open source license and warrant that you have the legal authority to do so.
