@@ -393,7 +393,7 @@ private object Template {
         |
         |## License ##
         |
-        |This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
+        |This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
         |""".stripMargin
 
   def shellPrompt: String =
