@@ -26,6 +26,7 @@ object FreshPlugin extends AutoPlugin {
     val freshAuthor = settingKey[String](s"""Author – value of "user.name" sys prop or "$FreshAuthor" by default""")
     val freshName = settingKey[String](s"""Build name – name of build directory by default""")
     val freshOrganization = settingKey[String](s"""Build organization – "$FreshOrganization" by default""")
+    val freshLicense = settingKey[String]("License kind")
     val freshSetUpGit = settingKey[Boolean]("Initialize a Git repo and create an initial commit – true by default")
   }
 
@@ -33,13 +34,15 @@ object FreshPlugin extends AutoPlugin {
     final val Organization = "organization"
     final val Name = "name"
     final val Author = "author"
+    final val License = "license"
     final val SetUpGit = "setUpGit"
   }
 
-  private case class Args(organization: Option[String], name: Option[String], author: Option[String], setUpGit: Option[Boolean])
+  private case class Args(organization: Option[String], name: Option[String], author: Option[String], license: Option[String], setUpGit: Option[Boolean])
 
   private final val FreshOrganization = "default"
   private final val FreshAuthor = "default"
+  private final val FreshLicense = "apache"
 
   override def requires = JvmPlugin
 
@@ -50,6 +53,7 @@ object FreshPlugin extends AutoPlugin {
     autoImport.freshOrganization := FreshOrganization,
     autoImport.freshName := Keys.baseDirectory.value.getName,
     autoImport.freshAuthor := sys.props.get("user.name").getOrElse(FreshAuthor),
+    autoImport.freshLicense := FreshLicense,
     autoImport.freshSetUpGit := true
   )
 
@@ -61,8 +65,9 @@ object FreshPlugin extends AutoPlugin {
     val args = arg(Arg.Organization, NotQuoted).? ~
       arg(Arg.Name, NotQuoted).? ~
       arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
+      arg(Arg.License, token(StringBasic)).? ~
       arg(Arg.SetUpGit, Bool).?
-    args.map { case o ~ n ~ a ~ g => Args(o, n, a, g) }
+    args.map { case o ~ n ~ a ~ l ~ g => Args(o, n, a, l, g) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -72,9 +77,10 @@ object FreshPlugin extends AutoPlugin {
     val organization = args.organization.getOrElse(setting(autoImport.freshOrganization))
     val name = args.name.getOrElse(setting(autoImport.freshName))
     val author = args.author.getOrElse(setting(autoImport.freshAuthor))
+    val license = args.license.getOrElse(setting(autoImport.freshLicense))
     val setUpGit = args.setUpGit.getOrElse(setting(autoImport.freshSetUpGit))
 
-    val fresh = new Fresh(buildDir, organization, name, author)
+    val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeBuildProperties()
     fresh.writeBuildSbt()
     fresh.writeBuildScala()
