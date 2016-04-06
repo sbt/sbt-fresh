@@ -124,6 +124,7 @@ private object Template {
        |# ENSIME
        |.ensime
        |.ensime_lucene
+       |.ensime_cache
        |
        |# Mac
        |.DS_Store
