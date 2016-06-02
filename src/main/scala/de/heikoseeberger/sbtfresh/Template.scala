@@ -33,7 +33,7 @@ private object Template {
         |name := "$name"
         |
         |libraryDependencies ++= Vector(
-        |  Library.scalaCheck % "test"
+        |  Library.scalaTest % "test"
         |)
         |
         |initialCommands := $TQ|import ${`package`}._
@@ -91,12 +91,12 @@ private object Template {
     """|import sbt._
        |
        |object Version {
-       |  final val Scala      = "2.11.8"
-       |  final val ScalaCheck = "1.13.0"
+       |  final val Scala     = "2.11.8"
+       |  final val ScalaTest = "3.0.0-RC1"
        |}
        |
        |object Library {
-       |  val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.ScalaCheck
+       |  val scalaTest = "org.scalatest" %% "scalatest" % Version.ScalaTest
        |}
        |""".stripMargin
 
