@@ -28,15 +28,10 @@ package object sbtfresh {
   implicit class StringOps(val s: String) extends AnyVal {
 
     def decapitalize: String =
-      if (s == null || s.isEmpty) s
-      else s.head.toLower +: s.tail
+      if (s == null || s.isEmpty) s else s.head.toLower +: s.tail
 
-    def segments: Vector[String] = s.split("""\.|-""").toVector
-
-    def toCamelCase: String = {
-      val ss = segments
-      ss.tail.foldLeft(ss.head)(_ + _.capitalize)
-    }
+    def segments: Vector[String] =
+      s.split("""\.|-""").toVector
   }
 
   final val TQ = "\"\"\""

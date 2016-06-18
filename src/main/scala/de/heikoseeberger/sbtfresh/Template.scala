@@ -23,10 +23,9 @@ private object Template {
        |""".stripMargin
 
   def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
-    val identifier = name.toCamelCase
     val `package` = packageSegments.mkString(".")
-    s"""|lazy val $identifier = project
-        |  .copy(id = "$name")
+    val n = if (name.segments.mkString == name) name else s"`$name`"
+    s"""|lazy val $n = project
         |  .in(file("."))
         |  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |
