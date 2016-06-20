@@ -29,8 +29,6 @@ private object Template {
         |  .in(file("."))
         |  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |
-        |name := "$name"
-        |
         |libraryDependencies ++= Vector(
         |  Library.scalaTest % "test"
         |)
