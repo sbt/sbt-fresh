@@ -35,7 +35,7 @@ Following licenses arguments is avalable:
 - `bsd`
 - `bsd3clause`
 - `gpl3`
-- 'none' 
+- 'none'
 
 
 ## Layout

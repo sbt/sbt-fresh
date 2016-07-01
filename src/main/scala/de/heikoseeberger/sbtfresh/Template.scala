@@ -238,18 +238,7 @@ private object Template {
   def plugins: String =
     """|addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.8.5")
        |addSbtPlugin("org.scalariform"   % "sbt-scalariform" % "1.6.0")
-       |//addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "1.5.1")
-       |
-       |// is a SNAPSHOT version of sbt-header plugin (commit hash: 7045c0afc1724106b83766d3ae3ce31a5ef18acd).
-       |// It used here because v1.5.1 doesn't has yet chooses of licenses kind.
-       |// TODO: should be replaced witn v.1.5.2 (or newest version) then it be ready.
-       |addSbtPlugin("de.heikoseeberger" % "sbt-header" % "1.5.1-SNP")
-       |
-       |// unofficial bintray repo for sbt-header:1.5.1-SNP only
-       |resolvers += Resolver.url(
-       |  "bintray-strobe-sbt-plugins",
-       |  url("http://dl.bintray.com/strobe/sbt-plugins"))(
-       |  Resolver.ivyStylePatterns)
+       |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "1.6.0")
        |""".stripMargin
 
   def readme(name: String): String =
