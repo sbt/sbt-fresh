@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
 import org.eclipse.jgit.api.Git
 
-private class Fresh(buildDir: Path, organization: String, name: String, author: String) {
+private class Fresh(buildDir: Path, organization: String, name: String, author: String, license: String) {
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
 
@@ -44,13 +44,17 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
 
   def writeBuildSbt(): Path = write("build.sbt", Template.buildSbt(organization, name, packageSegments))
 
-  def writeBuildScala(): Path = write("project/Build.scala", Template.buildScala(organization, author))
+  def writeBuildScala(): Path = write("project/Build.scala", Template.buildScala(organization, author, license))
 
   def writeDependencies(): Path = write("project/Dependencies.scala", Template.dependencies)
 
   def writeGitignore(): Path = write(".gitignore", Template.gitignore)
 
-  def writeLicense(): Path = write("src/main/resources/LICENSE", Template.license)
+  def writeLicense(): Unit = {
+    val l = Template.license(license)
+    val r = l.replaceAll("<YEAR>", "2016").replaceAll("<OWNER>", author)
+    write("LICENSE", r)
+  }
 
   def writeNotice(): Path = write("NOTICE", Template.notice(author))
 

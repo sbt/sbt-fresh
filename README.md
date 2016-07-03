@@ -16,6 +16,7 @@ freshAuthor       := "Heiko Seeberger"   // Author – value of "user.name" sys 
 freshName         := "no-idea"           // Build name – name of build directory by default
 freshOrganization := "de.heikoseeberger" // Build organization – "default" by default
 freshSetUpGit     := true                // Initialize a Git repo and create an initial commit – true by default
+freshLicense      := "mit"               // License kind, see avalable options below
 ```
 
 In order to scaffold a fresh sbt project, just start sbt in an empty directory. Then call the `fresh` command, optionally passing one or more of the following arguments which override the respective settings:
@@ -23,6 +24,19 @@ In order to scaffold a fresh sbt project, just start sbt in an empty directory. 
 - `name`
 - `organization`
 - `setUpGit`
+- `license`
+
+Example:
+        ```sbt> fresh license=mit```
+
+Following licenses arguments is avalable:
+- `apache`
+- `mit`
+- `bsd`
+- `bsd3clause`
+- `gpl3`
+- 'none'
+
 
 ## Layout
 
@@ -42,7 +56,7 @@ sbt-fresh creates a project with the following layout:
 + src
 --+ main
 ----+ resources
-------+ LICENSE         // Apache 2 license
+------+ LICENSE         // license file (Apache by default)
 ----+ scala
 ------+ package.scala   // type aliases repointing `Seq` and friends to immutable
 ```

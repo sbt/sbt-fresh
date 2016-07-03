@@ -4,7 +4,7 @@ $ exists build.sbt
 $ exists project/Build.scala
 $ exists project/Dependencies.scala
 $ exists .gitignore
-$ exists src/main/resources/LICENSE
+$ exists LICENSE
 $ exists NOTICE
 $ exists src/main/scala/org/acme/package.scala
 $ exists project/plugins.sbt
