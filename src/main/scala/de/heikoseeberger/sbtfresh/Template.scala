@@ -92,8 +92,12 @@ private object Template {
 
     def getLicenseMetaData =
       licenseMetaData match {
-        case Some(l) => s"""\n    licenses += $l,"""
-        case None    => ""
+        case Some(l) =>
+          s"""|
+              |    licenses += $l,
+              |    mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+        case None =>
+          ""
       }
 
     def getHeaderPluginLicense =
