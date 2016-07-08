@@ -67,6 +67,8 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
 
   def writeReadme(): Path = write("README.md", Template.readme(name))
 
+  def writeScalafmt(): Path = write(".scalafmt", Template.scalafmt)
+
   def writeShellPrompt(): Path = write("shell-prompt.sbt", Template.shellPrompt)
 
   private def write(path: String, content: String) = {
