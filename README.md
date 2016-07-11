@@ -5,7 +5,7 @@ sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which
 Add sbt-fresh to your global plugins definition, which most probably resides under `~/.sbt/0.13/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "1.4.1")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "1.5.0")
 ```
 
 You can define the following settings in your global build definition, which most probably sits at `~/.sbt/0.13/build.sbt`:
@@ -13,7 +13,7 @@ You can define the following settings in your global build definition, which mos
 ``` scala
 import de.heikoseeberger.sbtfresh.FreshPlugin.autoImport._
 freshAuthor       := "Heiko Seeberger"   // Author – value of "user.name" sys prop or "default" by default
-freshName         := "no-idea"           // Build name – name of build directory by default
+freshName         := "no-idea"           // Build name – name of build directory by default; doesn't make much sense as a permanent setting
 freshOrganization := "de.heikoseeberger" // Build organization – "default" by default
 freshSetUpGit     := true                // Initialize a Git repo and create an initial commit – true by default
 freshLicense      := "mit"               // License kind, see avalable options below – `apache` by default
@@ -46,6 +46,7 @@ sbt-fresh creates a project with the following layout:
 
 ```
 + .gitignore
++ .scalafmt
 + build.sbt             // specific settings for (single) module
 + LICENSE               // license file (Apache by default)
 + NOTICE
@@ -53,7 +54,7 @@ sbt-fresh creates a project with the following layout:
 --+ build.properties    // sbt version
 --+ Build.scala         // common settings for all modules
 --+ Dependencies.scala  // values for library dependencies
---+ plugins.sbt         // sbt-git, sbt-header, sbt-scalariform
+--+ plugins.sbt         // sbt-git, sbt-header, sbt-scalafmt
 + README.md
 + shell-prompt.sbt      // show project id
 + src
