@@ -87,15 +87,15 @@ private object Template {
 
   def buildScala(organization: String, author: String, license: String): String = {
     val kind = getLicenseKind(license)
-    val licenseMetaData: Option[String] = sbtProjectLicenseMetaData.get(kind)
-    val headerPluginLicense: Option[String] = headerPluginLicenseSetting.get(kind)
+    val licenseMetaData = sbtProjectLicenseMetaData.get(kind)
+    val headerPluginLicense = headerPluginLicenseSetting.get(kind)
 
     def getLicenseMetaData =
       licenseMetaData match {
         case Some(l) =>
           s"""|
-              |    licenses += $l,
-              |    mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+              |      licenses += $l,
+              |      mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
         case None =>
           ""
       }
@@ -112,48 +112,46 @@ private object Template {
         |           |\"\"\".stripMargin))"""
       }
 
-    s"""|import com.typesafe.sbt.{ GitPlugin, SbtScalariform }
+    s"""|import com.typesafe.sbt.GitPlugin
         |import de.heikoseeberger.sbtheader.HeaderPlugin
-        |import de.heikoseeberger.sbtheader.HeaderPattern
         |import de.heikoseeberger.sbtheader.license._
+        |import org.scalafmt.sbt.ScalaFmtPlugin
         |import sbt._
         |import sbt.plugins.JvmPlugin
         |import sbt.Keys._
-        |import scalariform.formatter.preferences.{ AlignSingleLineCaseStatements, DoubleIndentClassDeclaration }
         |
         |object Build extends AutoPlugin {
         |
-        |  override def requires = JvmPlugin && HeaderPlugin && GitPlugin && SbtScalariform
+        |  override def requires = JvmPlugin && HeaderPlugin && GitPlugin && ScalaFmtPlugin
         |
         |  override def trigger = allRequirements
         |
-        |  override def projectSettings = Vector(
-        |    // Core settings
-        |    organization := "$organization", ${getLicenseMetaData}
-        |    scalaVersion := Version.Scala,
-        |    crossScalaVersions := Vector(scalaVersion.value),
-        |    scalacOptions ++= Vector(
-        |      "-unchecked",
-        |      "-deprecation",
-        |      "-language:_",
-        |      "-target:jvm-1.8",
-        |      "-encoding", "UTF-8"
-        |    ),
-        |    unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
-        |    unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
+        |  override def projectSettings =
+        |    ScalaFmtPlugin.autoImport.reformatOnCompileSettings ++
+        |    Vector(
+        |      // Core settings
+        |      organization := "$organization", ${getLicenseMetaData}
+        |      scalaVersion := Version.Scala,
+        |      crossScalaVersions := Vector(scalaVersion.value),
+        |      scalacOptions ++= Vector(
+        |        "-unchecked",
+        |        "-deprecation",
+        |        "-language:_",
+        |        "-target:jvm-1.8",
+        |        "-encoding", "UTF-8"
+        |      ),
+        |      unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
+        |      unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
         |
-        |    // Scalariform settings
-        |    SbtScalariform.autoImport.scalariformPreferences := SbtScalariform.autoImport.scalariformPreferences.value
-        |      .setPreference(AlignSingleLineCaseStatements, true)
-        |      .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 100)
-        |      .setPreference(DoubleIndentClassDeclaration, true),
+        |      // scalafmt settings
+        |      ScalaFmtPlugin.autoImport.scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt"),
         |
-        |    // Git settings
-        |    GitPlugin.autoImport.git.useGitDescribe := true,
+        |      // Git settings
+        |      GitPlugin.autoImport.git.useGitDescribe := true,
         |
-        |    // Header settings
-        |    ${getHeaderPluginLicense}
-        |  )
+        |      // Header settings
+        |      ${getHeaderPluginLicense}
+        |    )
         |}
         |""".stripMargin
   }
@@ -232,17 +230,17 @@ private object Template {
         |package object $lastSegment {
         |
         |  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-        |  type Iterable[+A] = scala.collection.immutable.Iterable[A]
-        |  type Seq[+A] = scala.collection.immutable.Seq[A]
-        |  type IndexedSeq[+A] = scala.collection.immutable.IndexedSeq[A]
+        |  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
+        |  type Seq[+A]         = scala.collection.immutable.Seq[A]
+        |  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
         |}
         |""".stripMargin
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.8.5")
-       |addSbtPlugin("org.scalariform"   % "sbt-scalariform" % "1.6.0")
-       |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "1.6.0")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.2.10")
+       |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
+       |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
 
   def readme(name: String): String =
@@ -258,6 +256,12 @@ private object Template {
         |
         |This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
         |""".stripMargin
+
+  def scalafmt: String =
+    """|--style defaultWithAlign
+       |--spacesInImportCurlyBraces true
+       |--danglingParentheses true
+       |""".stripMargin
 
   def shellPrompt: String =
     """|shellPrompt.in(ThisBuild) := (state => s"[${Project.extract(state).currentRef.project}]> ")
