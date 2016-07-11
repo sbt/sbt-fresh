@@ -5,7 +5,7 @@ sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which
 Add sbt-fresh to your global plugins definition, which most probably resides under `~/.sbt/0.13/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "1.5.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "1.5.1")
 ```
 
 You can define the following settings in your global build definition, which most probably sits at `~/.sbt/0.13/build.sbt`:
