@@ -161,7 +161,7 @@ private object Template {
        |
        |object Version {
        |  final val Scala     = "2.11.8"
-       |  final val ScalaTest = "3.0.0-RC4"
+       |  final val ScalaTest = "3.0.0"
        |}
        |
        |object Library {
@@ -238,7 +238,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.2.11")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.2.12")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
