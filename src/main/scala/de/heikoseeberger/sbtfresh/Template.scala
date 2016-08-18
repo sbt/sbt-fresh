@@ -238,7 +238,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.2.12")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.3.0")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
