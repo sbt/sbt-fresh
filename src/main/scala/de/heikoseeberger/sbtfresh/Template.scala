@@ -103,9 +103,9 @@ private object Template {
     def getHeaderPluginLicense =
       headerPluginLicense match {
         case Some(h) =>
-          s"""HeaderPlugin.autoImport.headers := Map("scala" -> $h("2016", "$author"))"""
+          s"""headers := Map("scala" -> $h("2016", "$author"))"""
         case None =>
-          s"""HeaderPlugin.autoImport.headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
+          s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
         \"\"\"|/*
         |           | * Copyright 2016 $author
         |           | */
@@ -113,44 +113,51 @@ private object Template {
       }
 
     s"""|import com.typesafe.sbt.GitPlugin
+        |import com.typesafe.sbt.GitPlugin.autoImport._
         |import de.heikoseeberger.sbtheader.HeaderPlugin
+        |import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
         |import de.heikoseeberger.sbtheader.license._
         |import org.scalafmt.sbt.ScalaFmtPlugin
+        |import org.scalafmt.sbt.ScalaFmtPlugin.autoImport._
         |import sbt._
         |import sbt.plugins.JvmPlugin
         |import sbt.Keys._
         |
+        |// format: off
+        |
         |object Build extends AutoPlugin {
         |
-        |  override def requires = JvmPlugin && HeaderPlugin && GitPlugin && ScalaFmtPlugin
+        |  override def requires =
+        |    JvmPlugin && HeaderPlugin && GitPlugin && ScalaFmtPlugin
         |
         |  override def trigger = allRequirements
         |
         |  override def projectSettings =
-        |    ScalaFmtPlugin.autoImport.reformatOnCompileSettings ++
+        |    reformatOnCompileSettings ++
         |    Vector(
-        |      // Core settings
-        |      organization := "$organization", ${getLicenseMetaData}
-        |      scalaVersion := Version.Scala,
-        |      crossScalaVersions := Vector(scalaVersion.value),
-        |      scalacOptions ++= Vector(
-        |        "-unchecked",
-        |        "-deprecation",
-        |        "-language:_",
-        |        "-target:jvm-1.8",
-        |        "-encoding", "UTF-8"
-        |      ),
-        |      unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
-        |      unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
+        |           // Core settings
+        |           organization := "$organization", ${getLicenseMetaData}
+        |           scalaVersion := Version.Scala,
+        |           crossScalaVersions := Vector(scalaVersion.value),
+        |           scalacOptions ++= Vector(
+        |             "-unchecked",
+        |             "-deprecation",
+        |             "-language:_",
+        |             "-target:jvm-1.8",
+        |             "-encoding", "UTF-8"
+        |           ),
+        |           unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
+        |           unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
         |
-        |      // scalafmt settings
-        |      ScalaFmtPlugin.autoImport.scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt"),
+        |           // scalafmt settings
+        |           formatSbtFiles := false,
+        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt"),
         |
-        |      // Git settings
-        |      GitPlugin.autoImport.git.useGitDescribe := true,
+        |           // Git settings
+        |           git.useGitDescribe := true,
         |
-        |      // Header settings
-        |      ${getHeaderPluginLicense}
+        |           // Header settings
+        |           ${getHeaderPluginLicense}
         |    )
         |}
         |""".stripMargin
@@ -238,7 +245,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.3.0")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.3.1")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
