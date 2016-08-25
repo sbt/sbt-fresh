@@ -166,6 +166,8 @@ private object Template {
   def dependencies: String =
     """|import sbt._
        |
+       |// format: off
+       |
        |object Version {
        |  final val Scala     = "2.11.8"
        |  final val ScalaTest = "3.0.0"
