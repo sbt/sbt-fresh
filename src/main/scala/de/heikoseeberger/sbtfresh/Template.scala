@@ -94,8 +94,8 @@ private object Template {
       licenseMetaData match {
         case Some(l) =>
           s"""|
-              |      licenses += $l,
-              |      mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+              |           licenses += $l,
+              |           mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
         case None =>
           ""
       }
