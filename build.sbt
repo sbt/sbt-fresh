@@ -19,7 +19,7 @@ unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value)
 unmanagedSourceDirectories.in(Test)    := Vector(scalaSource.in(Test).value)
 
 libraryDependencies ++= Vector(
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.2.0.201601211800-r"
+  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.4.1.201607150455-r"
 )
 
 initialCommands := """|import de.heikoseeberger.sbtfresh._""".stripMargin
