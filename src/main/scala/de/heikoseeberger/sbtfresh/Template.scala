@@ -65,6 +65,14 @@ private object Template {
     License.GPLV3 -> """("GPLv3", url("http://www.gnu.org/licenses/gpl-3.0.en.html"))"""
   )
 
+  def readmeLicenseMetaData: Map[License.EnumVal, String] = Map(
+    License.ApacheV2 -> """[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)""",
+    License.MIT -> """[MIT License"](https://opensource.org/licenses/MIT)""",
+    License.BSD -> """[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause)""",
+    License.BSD3Clause -> """[BSD 3 Clause License](https://opensource.org/licenses/BSD-3-Clause)""",
+    License.GPLV3 -> """[GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.en.html)"""
+  )
+
   def buildProperties: String =
     """|sbt.version = 0.13.12
        |""".stripMargin
@@ -252,7 +260,10 @@ private object Template {
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
 
-  def readme(name: String): String =
+  def readme(name: String, license: String): String = {
+    val licenseKind: License.EnumVal = getLicenseKind(license)
+    val licenseMetaData: String = readmeLicenseMetaData.get(licenseKind).getOrElse("[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)")
+
     s"""|# $name #
         |
         |Welcome to $name!
@@ -263,8 +274,9 @@ private object Template {
         |
         |## License ##
         |
-        |This code is open source software licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
+        |This code is open source software licensed under the $licenseMetaData.
         |""".stripMargin
+  }
 
   def scalafmt: String =
     """|--style defaultWithAlign
