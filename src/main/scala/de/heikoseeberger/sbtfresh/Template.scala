@@ -261,8 +261,7 @@ private object Template {
        |""".stripMargin
 
   def readme(name: String, license: String): String = {
-    val licenseKind: License.EnumVal = getLicenseKind(license)
-    val licenseMetaData: String = readmeLicenseMetaData.get(licenseKind).getOrElse("[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html)")
+    val licenseMetaData = readmeLicenseMetaData.get(getLicenseKind(license)).get
 
     s"""|# $name #
         |
