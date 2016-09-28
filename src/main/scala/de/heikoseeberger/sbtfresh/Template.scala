@@ -159,7 +159,7 @@ private object Template {
         |
         |           // scalafmt settings
         |           formatSbtFiles := false,
-        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt"),
+        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
         |
         |           // Git settings
         |           git.useGitDescribe := true,
@@ -255,7 +255,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.3.1")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.1")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
@@ -277,10 +277,13 @@ private object Template {
         |""".stripMargin
   }
 
-  def scalafmt: String =
-    """|--style defaultWithAlign
-       |--spacesInImportCurlyBraces true
-       |--danglingParentheses true
+  def scalafmtConf: String =
+    """|style               = defaultWithAlign
+       |danglingParentheses = true
+       |
+       |spaces {
+       |  inImportCurlyBraces = true
+       |}
        |""".stripMargin
 
   def shellPrompt: String =
