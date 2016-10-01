@@ -80,9 +80,8 @@ private object Template {
   def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
     val `package` = packageSegments.mkString(".")
     val n = if (name.segments.mkString == name) name else s"`$name`"
-    s"""|lazy val $n = project
-        |  .in(file("."))
-        |  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+    s"""|lazy val $n =
+        |  project.in(file(".")).enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |
         |libraryDependencies ++= Vector(
         |  Library.scalaTest % "test"
@@ -131,8 +130,6 @@ private object Template {
         |import sbt.plugins.JvmPlugin
         |import sbt.Keys._
         |
-        |// format: off
-        |
         |object Build extends AutoPlugin {
         |
         |  override def requires =
@@ -173,8 +170,6 @@ private object Template {
 
   def dependencies: String =
     """|import sbt._
-       |
-       |// format: off
        |
        |object Version {
        |  final val Scala     = "2.11.8"
@@ -255,7 +250,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.1")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.2")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
@@ -280,6 +275,7 @@ private object Template {
   def scalafmtConf: String =
     """|style               = defaultWithAlign
        |danglingParentheses = true
+       |indentOperator      = spray
        |
        |spaces {
        |  inImportCurlyBraces = true
@@ -287,6 +283,9 @@ private object Template {
        |""".stripMargin
 
   def shellPrompt: String =
-    """|shellPrompt.in(ThisBuild) := (state => s"[${Project.extract(state).currentRef.project}]> ")
+    """|shellPrompt.in(ThisBuild) := { state =>
+       |  val project = Project.extract(state).currentRef.project
+       |  s"[$project]> "
+       |}
        |""".stripMargin
 }
