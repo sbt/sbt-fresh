@@ -141,7 +141,7 @@ private object Template {
         |    reformatOnCompileSettings ++
         |    Vector(
         |           // Core settings
-        |           organization := "$organization", ${getLicenseMetaData}
+        |           organization := "$organization",${getLicenseMetaData}
         |           scalaVersion := Version.Scala,
         |           crossScalaVersions := Vector(scalaVersion.value),
         |           scalacOptions ++= Vector(
