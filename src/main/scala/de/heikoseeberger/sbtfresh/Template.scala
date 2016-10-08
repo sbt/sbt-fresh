@@ -19,6 +19,7 @@ package de.heikoseeberger.sbtfresh
 import sbt.IO
 
 private object Template {
+  val year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
 
   object License {
     sealed trait EnumVal
@@ -110,11 +111,11 @@ private object Template {
     def getHeaderPluginLicense =
       headerPluginLicense match {
         case Some(h) =>
-          s"""headers := Map("scala" -> $h("2016", "$author"))"""
+          s"""headers := Map("scala" -> $h("$year", "$author"))"""
         case None =>
           s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
         \"\"\"|/*
-        |           | * Copyright 2016 $author
+        |           | * Copyright $year $author
         |           | */
         |           |\"\"\".stripMargin))"""
       }
@@ -230,7 +231,7 @@ private object Template {
   }
 
   def notice(author: String): String =
-    s"""|Copyright 2016 $author
+    s"""|Copyright $year $author
         |""".stripMargin
 
   def `package`(packageSegments: Vector[String], author: String): String = {
