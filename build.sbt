@@ -5,7 +5,7 @@ val sbtFresh = project
 
 organization := "de.heikoseeberger"
 name         := "sbt-fresh"
-licenses     += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+licenses     += (("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")))
 
 scalacOptions ++= Vector(
   "-unchecked",
