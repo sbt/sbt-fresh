@@ -1,6 +1,6 @@
 # sbt-fresh #
 
-sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which is already prepared for multiple modules: It creates an sbt build according to established best practices, creates a useful package object for the root package, initializes a Git repository and creates an initial commit, etc.
+sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which is already prepared for multiple modules: It creates an sbt build according to established best practices, creates a useful package object for the root package, initializes a Git repository and creates an initial commit, etc. Notice that the build definition created by sbt-fresh is incompatible with the -Yno-adapted-args scalac option.
 
 Add sbt-fresh to your global plugins definition, which most probably resides under `~/.sbt/0.13/plugins/plugins.sbt`:
 
