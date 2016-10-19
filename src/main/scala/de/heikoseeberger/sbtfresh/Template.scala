@@ -124,6 +124,7 @@ private object Template {
         |import com.typesafe.sbt.GitPlugin.autoImport._
         |import de.heikoseeberger.sbtheader.HeaderPlugin
         |import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
+        |import de.heikoseeberger.sbtheader.HeaderPattern
         |import de.heikoseeberger.sbtheader.license._
         |import org.scalafmt.sbt.ScalaFmtPlugin
         |import org.scalafmt.sbt.ScalaFmtPlugin.autoImport._
