@@ -19,6 +19,7 @@ package de.heikoseeberger.sbtfresh
 import sbt.IO
 
 private object Template {
+  val year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
 
   object License {
     sealed trait EnumVal
@@ -80,9 +81,8 @@ private object Template {
   def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
     val `package` = packageSegments.mkString(".")
     val n = if (name.segments.mkString == name) name else s"`$name`"
-    s"""|lazy val $n = project
-        |  .in(file("."))
-        |  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+    s"""|lazy val $n =
+        |  project.in(file(".")).enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |
         |libraryDependencies ++= Vector(
         |  Library.scalaTest % "test"
@@ -111,11 +111,11 @@ private object Template {
     def getHeaderPluginLicense =
       headerPluginLicense match {
         case Some(h) =>
-          s"""headers := Map("scala" -> $h("2016", "$author"))"""
+          s"""headers := Map("scala" -> $h("$year", "$author"))"""
         case None =>
           s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
         \"\"\"|/*
-        |           | * Copyright 2016 $author
+        |           | * Copyright $year $author
         |           | */
         |           |\"\"\".stripMargin))"""
       }
@@ -131,8 +131,6 @@ private object Template {
         |import sbt.plugins.JvmPlugin
         |import sbt.Keys._
         |
-        |// format: off
-        |
         |object Build extends AutoPlugin {
         |
         |  override def requires =
@@ -144,7 +142,7 @@ private object Template {
         |    reformatOnCompileSettings ++
         |    Vector(
         |           // Core settings
-        |           organization := "$organization", ${getLicenseMetaData}
+        |           organization := "$organization",${getLicenseMetaData}
         |           scalaVersion := Version.Scala,
         |           crossScalaVersions := Vector(scalaVersion.value),
         |           scalacOptions ++= Vector(
@@ -159,7 +157,7 @@ private object Template {
         |
         |           // scalafmt settings
         |           formatSbtFiles := false,
-        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt"),
+        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
         |
         |           // Git settings
         |           git.useGitDescribe := true,
@@ -173,8 +171,6 @@ private object Template {
 
   def dependencies: String =
     """|import sbt._
-       |
-       |// format: off
        |
        |object Version {
        |  final val Scala     = "2.11.8"
@@ -235,7 +231,7 @@ private object Template {
   }
 
   def notice(author: String): String =
-    s"""|Copyright 2016 $author
+    s"""|Copyright $year $author
         |""".stripMargin
 
   def `package`(packageSegments: Vector[String], author: String): String = {
@@ -255,7 +251,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.3.1")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.7")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
@@ -277,13 +273,20 @@ private object Template {
         |""".stripMargin
   }
 
-  def scalafmt: String =
-    """|--style defaultWithAlign
-       |--spacesInImportCurlyBraces true
-       |--danglingParentheses true
+  def scalafmtConf: String =
+    """|style               = defaultWithAlign
+       |danglingParentheses = true
+       |indentOperator      = spray
+       |
+       |spaces {
+       |  inImportCurlyBraces = true
+       |}
        |""".stripMargin
 
   def shellPrompt: String =
-    """|shellPrompt.in(ThisBuild) := (state => s"[${Project.extract(state).currentRef.project}]> ")
+    """|shellPrompt.in(ThisBuild) := { state =>
+       |  val project = Project.extract(state).currentRef.project
+       |  s"[$project]> "
+       |}
        |""".stripMargin
 }
