@@ -102,8 +102,8 @@ private object Template {
       licenseMetaData match {
         case Some(l) =>
           s"""|
-              |           licenses += $l,
-              |           mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+              |      licenses += $l,
+              |      mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
         case None =>
           ""
       }
@@ -142,29 +142,29 @@ private object Template {
         |  override def projectSettings =
         |    reformatOnCompileSettings ++
         |    Vector(
-        |           // Core settings
-        |           organization := "$organization",${getLicenseMetaData}
-        |           scalaVersion := Version.Scala,
-        |           crossScalaVersions := Vector(scalaVersion.value),
-        |           scalacOptions ++= Vector(
-        |             "-unchecked",
-        |             "-deprecation",
-        |             "-language:_",
-        |             "-target:jvm-1.8",
-        |             "-encoding", "UTF-8"
-        |           ),
-        |           unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
-        |           unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
+        |      // Core settings
+        |      organization := "$organization",${getLicenseMetaData}
+        |      scalaVersion := Version.Scala,
+        |      crossScalaVersions := Vector(scalaVersion.value),
+        |      scalacOptions ++= Vector(
+        |        "-unchecked",
+        |        "-deprecation",
+        |        "-language:_",
+        |        "-target:jvm-1.8",
+        |        "-encoding", "UTF-8"
+        |      ),
+        |      unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
+        |      unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
         |
-        |           // scalafmt settings
-        |           formatSbtFiles := false,
-        |           scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
+        |      // scalafmt settings
+        |      formatSbtFiles := false,
+        |      scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
         |
-        |           // Git settings
-        |           git.useGitDescribe := true,
+        |      // Git settings
+        |      git.useGitDescribe := true,
         |
-        |           // Header settings
-        |           ${getHeaderPluginLicense}
+        |      // Header settings
+        |      ${getHeaderPluginLicense}
         |    )
         |}
         |""".stripMargin
