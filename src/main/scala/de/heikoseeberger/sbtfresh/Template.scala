@@ -75,7 +75,7 @@ private object Template {
   )
 
   def buildProperties: String =
-    """|sbt.version = 0.13.12
+    """|sbt.version = 0.13.13
        |""".stripMargin
 
   def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
