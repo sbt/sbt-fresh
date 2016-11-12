@@ -159,6 +159,7 @@ private object Template {
         |      // scalafmt settings
         |      formatSbtFiles := false,
         |      scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
+        |      ivyScala       := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)), // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
         |
         |      // Git settings
         |      git.useGitDescribe := true,
@@ -174,8 +175,8 @@ private object Template {
     """|import sbt._
        |
        |object Version {
-       |  final val Scala     = "2.11.8"
-       |  final val ScalaTest = "3.0.0"
+       |  final val Scala     = "2.12.0"
+       |  final val ScalaTest = "3.0.1"
        |}
        |
        |object Library {
@@ -252,7 +253,7 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.8")
+    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.10")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
