@@ -17,73 +17,66 @@
 package de.heikoseeberger.sbtfresh
 
 import java.util.Calendar
-import sbt.IO
 
 private object Template {
 
+  sealed trait License
   object License {
-    sealed trait EnumVal
-    case object ApacheV2 extends EnumVal
-    case object MIT extends EnumVal
-    case object BSD extends EnumVal
-    case object BSD3Clause extends EnumVal
-    case object GPLV3 extends EnumVal
-    case object None extends EnumVal
+    case object ApacheV2   extends License
+    case object MIT        extends License
+    case object BSD        extends License
+    case object BSD3Clause extends License
+    case object GPLV3      extends License
+    case object None       extends License
   }
 
-  val year = Calendar.getInstance().get(Calendar.YEAR)
+  private val year = Calendar.getInstance().get(Calendar.YEAR)
 
-  def getLicenseKind(kind: String): License.EnumVal =
-    kind.toLowerCase() match {
-      case "apache"     => License.ApacheV2
-      case "mit"        => License.MIT
-      case "bsd"        => License.BSD
-      case "bsd3clause" => License.BSD3Clause
-      case "gpl3"       => License.GPLV3
-      case _            => License.None
-    }
-
-  def licensesPaths: Map[License.EnumVal, String] =
+  private val licensesPaths =
     Map(
-      License.ApacheV2 -> "/ApacheLicense",
-      License.MIT -> "/MitLicense",
-      License.BSD -> "/BSDLicense",
+      License.ApacheV2   -> "/ApacheLicense",
+      License.MIT        -> "/MitLicense",
+      License.BSD        -> "/BSDLicense",
       License.BSD3Clause -> "/BSD3ClauseLicense",
-      License.GPLV3 -> "/GPL3License"
+      License.GPLV3      -> "/GPL3License"
     )
 
-  def headerPluginLicenseSetting: Map[License.EnumVal, String] =
+  private val headerPluginLicenseSetting =
     Map(
-      License.ApacheV2 -> "Apache2_0",
-      License.MIT -> "MIT",
-      License.BSD -> "BSD2Clause",
+      License.ApacheV2   -> "Apache2_0",
+      License.MIT        -> "MIT",
+      License.BSD        -> "BSD2Clause",
       License.BSD3Clause -> "BSD3Clause",
-      License.GPLV3 -> "GPLv3"
+      License.GPLV3      -> "GPLv3"
     )
 
-  def sbtProjectLicenseMetaData: Map[License.EnumVal, String] = Map(
-    License.ApacheV2 -> """("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))""",
-    License.MIT -> """("MIT", url("https://opensource.org/licenses/MIT"))""",
-    License.BSD -> """("BSD-2-Clause", url("https://opensource.org/licenses/BSD-2-Clause"))""",
-    License.BSD3Clause -> """("BSD-3-Clause", url("https://opensource.org/licenses/BSD-3-Clause"))""",
-    License.GPLV3 -> """("GPLv3", url("http://www.gnu.org/licenses/gpl-3.0.en.html"))"""
-  )
+  private val buildScalaLicenseMetaData =
+    Map(
+      License.ApacheV2   -> """("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))""",
+      License.MIT        -> """("MIT", url("https://opensource.org/licenses/MIT"))""",
+      License.BSD        -> """("BSD-2-Clause", url("https://opensource.org/licenses/BSD-2-Clause"))""",
+      License.BSD3Clause -> """("BSD-3-Clause", url("https://opensource.org/licenses/BSD-3-Clause"))""",
+      License.GPLV3      -> """("GPLv3", url("http://www.gnu.org/licenses/gpl-3.0.en.html"))"""
+    )
 
-  def readmeLicenseMetaData: Map[License.EnumVal, String] = Map(
-    License.ApacheV2 -> """[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)""",
-    License.MIT -> """[MIT License"](https://opensource.org/licenses/MIT)""",
-    License.BSD -> """[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause)""",
-    License.BSD3Clause -> """[BSD 3 Clause License](https://opensource.org/licenses/BSD-3-Clause)""",
-    License.GPLV3 -> """[GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.en.html)"""
-  )
+  private val readmeLicenseMetaData =
+    Map(
+      License.ApacheV2   -> """[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)""",
+      License.MIT        -> """[MIT License"](https://opensource.org/licenses/MIT)""",
+      License.BSD        -> """[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause)""",
+      License.BSD3Clause -> """[BSD 3 Clause License](https://opensource.org/licenses/BSD-3-Clause)""",
+      License.GPLV3      -> """[GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.en.html)"""
+    )
 
   def buildProperties: String =
     """|sbt.version = 0.13.13
        |""".stripMargin
 
-  def buildSbt(organization: String, name: String, packageSegments: Vector[String]): String = {
+  def buildSbt(organization: String,
+               name: String,
+               packageSegments: Vector[String]): String = {
     val `package` = packageSegments.mkString(".")
-    val n = if (name.segments.mkString == name) name else s"`$name`"
+    val n         = if (name.segments.mkString == name) name else s"`$name`"
     s"""|lazy val $n =
         |  project.in(file(".")).enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |
@@ -96,9 +89,11 @@ private object Template {
         |""".stripMargin
   }
 
-  def buildScala(organization: String, author: String, license: String): String = {
-    val kind = getLicenseKind(license)
-    val licenseMetaData = sbtProjectLicenseMetaData.get(kind)
+  def buildScala(organization: String,
+                 author: String,
+                 license: String): String = {
+    val kind                = getLicenseKind(license)
+    val licenseMetaData     = buildScalaLicenseMetaData.get(kind)
     val headerPluginLicense = headerPluginLicenseSetting.get(kind)
 
     def createLicenseMetaData =
@@ -162,7 +157,7 @@ private object Template {
         |        Vector(scalaSource.in(Test).value),
         |
         |      // Publish settings
-        |      organization := "$organization",${createLicenseMetaData}
+        |      organization := "$organization",$createLicenseMetaData
         |
         |      // scalafmt settings
         |      formatSbtFiles := false,
@@ -173,7 +168,7 @@ private object Template {
         |      git.useGitDescribe := true,
         |
         |      // Header settings
-        |      ${createHeaderPluginLicense}
+        |      $createHeaderPluginLicense
         |    )
         |}
         |""".stripMargin
@@ -230,10 +225,10 @@ private object Template {
        |""".stripMargin
 
   def license(kind: String): String = {
-    val licenseKind: License.EnumVal = getLicenseKind(kind)
+    val licenseKind: License = getLicenseKind(kind)
 
     licensesPaths.map {
-      case (k, v) if (k == licenseKind) =>
+      case (k, v) if k == licenseKind =>
         val stream = getClass.getResourceAsStream(v)
         scala.io.Source.fromInputStream(stream).getLines().mkString("\n")
       case _ => ""
@@ -246,7 +241,7 @@ private object Template {
 
   def `package`(packageSegments: Vector[String], author: String): String = {
     val superPackage = packageSegments.init.mkString(".")
-    val lastSegment = packageSegments.last
+    val lastSegment  = packageSegments.last
     s"""|
         |package $superPackage
         |
@@ -311,4 +306,14 @@ private object Template {
        |  s"[$project]> "
        |}
        |""".stripMargin
+
+  private def getLicenseKind(kind: String) =
+    kind.toLowerCase() match {
+      case "apache"     => License.ApacheV2
+      case "mit"        => License.MIT
+      case "bsd"        => License.BSD
+      case "bsd3clause" => License.BSD3Clause
+      case "gpl3"       => License.GPLV3
+      case _            => License.None
+    }
 }

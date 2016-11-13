@@ -20,17 +20,19 @@ import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
 import org.eclipse.jgit.api.Git
 
-private class Fresh(buildDir: Path, organization: String, name: String, author: String, license: String) {
+private class Fresh(buildDir: Path,
+                    organization: String,
+                    name: String,
+                    author: String,
+                    license: String) {
+
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
 
   private val packageSegments = {
     val segments = (organization.segments ++ name.segments).map(_.toLowerCase)
-    val (tail, _) = segments
-      .tail
-      .zip(segments)
-      .filter { case (s1, s2) => s1 != s2 }
-      .unzip
+    val (tail, _) =
+      segments.tail.zip(segments).filter { case (s1, s2) => s1 != s2 }.unzip
     segments.head +: tail
   }
 
@@ -40,15 +42,21 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
     git.commit().setMessage("Fresh project, created with sbt-fresh").call()
   }
 
-  def writeBuildProperties(): Path = write("project/build.properties", Template.buildProperties)
+  def writeBuildProperties(): Path =
+    write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(): Path = write("build.sbt", Template.buildSbt(organization, name, packageSegments))
+  def writeBuildSbt(): Path =
+    write("build.sbt", Template.buildSbt(organization, name, packageSegments))
 
-  def writeBuildScala(): Path = write("project/Build.scala", Template.buildScala(organization, author, license))
+  def writeBuildScala(): Path =
+    write("project/Build.scala",
+          Template.buildScala(organization, author, license))
 
-  def writeDependencies(): Path = write("project/Dependencies.scala", Template.dependencies)
+  def writeDependencies(): Path =
+    write("project/Dependencies.scala", Template.dependencies)
 
-  def writeGitignore(): Path = write(".gitignore", Template.gitignore)
+  def writeGitignore(): Path =
+    write(".gitignore", Template.gitignore)
 
   def writeLicense(): Unit = {
     val l = Template.license(license)
@@ -56,24 +64,31 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
     write("LICENSE", r)
   }
 
-  def writeNotice(): Path = write("NOTICE", Template.notice(author))
+  def writeNotice(): Path =
+    write("NOTICE", Template.notice(author))
 
-  def writePackage(): Path = write(
-    packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala",
-    Template.`package`(packageSegments, author)
-  )
+  def writePackage(): Path = {
+    val path =
+      packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala"
+    write(path, Template.`package`(packageSegments, author))
+  }
 
-  def writePlugins(): Path = write("project/plugins.sbt", Template.plugins)
+  def writePlugins(): Path =
+    write("project/plugins.sbt", Template.plugins)
 
-  def writeReadme(): Path = write("README.md", Template.readme(name, license))
+  def writeReadme(): Path =
+    write("README.md", Template.readme(name, license))
 
-  def writeScalafmt(): Path = write(".scalafmt.conf", Template.scalafmtConf)
+  def writeScalafmt(): Path =
+    write(".scalafmt.conf", Template.scalafmtConf)
 
-  def writeShellPrompt(): Path = write("shell-prompt.sbt", Template.shellPrompt)
+  def writeShellPrompt(): Path =
+    write("shell-prompt.sbt", Template.shellPrompt)
 
   private def write(path: String, content: String) = {
     val resolvedPath = buildDir.resolve(path)
-    if (resolvedPath.getParent != null) Files.createDirectories(resolvedPath.getParent)
+    if (resolvedPath.getParent != null)
+      Files.createDirectories(resolvedPath.getParent)
     Files.write(resolvedPath, content.getBytes(UTF_8))
   }
 }
