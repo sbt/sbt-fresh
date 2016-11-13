@@ -16,10 +16,10 @@
 
 package de.heikoseeberger.sbtfresh
 
+import java.util.Calendar
 import sbt.IO
 
 private object Template {
-  val year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
 
   object License {
     sealed trait EnumVal
@@ -31,7 +31,9 @@ private object Template {
     case object None extends EnumVal
   }
 
-  def getLicenseKind(kind: String): License.EnumVal = {
+  val year = Calendar.getInstance().get(Calendar.YEAR)
+
+  def getLicenseKind(kind: String): License.EnumVal =
     kind.toLowerCase() match {
       case "apache"     => License.ApacheV2
       case "mit"        => License.MIT
@@ -40,23 +42,24 @@ private object Template {
       case "gpl3"       => License.GPLV3
       case _            => License.None
     }
-  }
 
-  def licensesPaths: Map[License.EnumVal, String] = Map(
-    License.ApacheV2 -> "/ApacheLicense",
-    License.MIT -> "/MitLicense",
-    License.BSD -> "/BSDLicense",
-    License.BSD3Clause -> "/BSD3ClauseLicense",
-    License.GPLV3 -> "/GPL3License"
-  )
+  def licensesPaths: Map[License.EnumVal, String] =
+    Map(
+      License.ApacheV2 -> "/ApacheLicense",
+      License.MIT -> "/MitLicense",
+      License.BSD -> "/BSDLicense",
+      License.BSD3Clause -> "/BSD3ClauseLicense",
+      License.GPLV3 -> "/GPL3License"
+    )
 
-  def headerPluginLicenseSetting: Map[License.EnumVal, String] = Map(
-    License.ApacheV2 -> "Apache2_0",
-    License.MIT -> "MIT",
-    License.BSD -> "BSD2Clause",
-    License.BSD3Clause -> "BSD3Clause",
-    License.GPLV3 -> "GPLv3"
-  )
+  def headerPluginLicenseSetting: Map[License.EnumVal, String] =
+    Map(
+      License.ApacheV2 -> "Apache2_0",
+      License.MIT -> "MIT",
+      License.BSD -> "BSD2Clause",
+      License.BSD3Clause -> "BSD3Clause",
+      License.GPLV3 -> "GPLv3"
+    )
 
   def sbtProjectLicenseMetaData: Map[License.EnumVal, String] = Map(
     License.ApacheV2 -> """("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))""",
@@ -98,17 +101,18 @@ private object Template {
     val licenseMetaData = sbtProjectLicenseMetaData.get(kind)
     val headerPluginLicense = headerPluginLicenseSetting.get(kind)
 
-    def getLicenseMetaData =
+    def createLicenseMetaData =
       licenseMetaData match {
         case Some(l) =>
           s"""|
               |      licenses += $l,
-              |      mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+              |      mappings.in(Compile, packageBin)
+              |        += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
         case None =>
           ""
       }
 
-    def getHeaderPluginLicense =
+    def createHeaderPluginLicense =
       headerPluginLicense match {
         case Some(h) =>
           s"""headers := Map("scala" -> $h("$year", "$author"))"""
@@ -129,8 +133,8 @@ private object Template {
         |import org.scalafmt.sbt.ScalaFmtPlugin
         |import org.scalafmt.sbt.ScalaFmtPlugin.autoImport._
         |import sbt._
-        |import sbt.plugins.JvmPlugin
         |import sbt.Keys._
+        |import sbt.plugins.JvmPlugin
         |
         |object Build extends AutoPlugin {
         |
@@ -142,8 +146,7 @@ private object Template {
         |  override def projectSettings =
         |    reformatOnCompileSettings ++
         |    Vector(
-        |      // Core settings
-        |      organization := "$organization",${getLicenseMetaData}
+        |      // Compile settings
         |      scalaVersion := Version.Scala,
         |      crossScalaVersions := Vector(scalaVersion.value),
         |      scalacOptions ++= Vector(
@@ -153,19 +156,24 @@ private object Template {
         |        "-target:jvm-1.8",
         |        "-encoding", "UTF-8"
         |      ),
-        |      unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value),
-        |      unmanagedSourceDirectories.in(Test) := Vector(scalaSource.in(Test).value),
+        |      unmanagedSourceDirectories.in(Compile) :=
+        |        Vector(scalaSource.in(Compile).value),
+        |      unmanagedSourceDirectories.in(Test) :=
+        |        Vector(scalaSource.in(Test).value),
+        |
+        |      // Publish settings
+        |      organization := "$organization",${createLicenseMetaData}
         |
         |      // scalafmt settings
         |      formatSbtFiles := false,
         |      scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
-        |      ivyScala       := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)), // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
+        |      ivyScala := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)), // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
         |
         |      // Git settings
         |      git.useGitDescribe := true,
         |
         |      // Header settings
-        |      ${getHeaderPluginLicense}
+        |      ${createHeaderPluginLicense}
         |    )
         |}
         |""".stripMargin
@@ -275,7 +283,13 @@ private object Template {
         |
         |## Contribution policy ##
         |
-        |Contributions via GitHub pull requests are gladly accepted from their original author. Along with any pull requests, please state that the contribution is your original work and that you license the work to the project under the project's open source license. Whether or not you state this explicitly, by submitting any copyrighted material via pull request, email, or other means you agree to license the material under the project's open source license and warrant that you have the legal authority to do so.
+        |Contributions via GitHub pull requests are gladly accepted from their original
+        |author. Along with any pull requests, please state that the contribution is your
+        |original work and that you license the work to the project under the project's
+        |open source license. Whether or not you state this explicitly, by submitting any
+        |copyrighted material via pull request, email, or other means you agree to
+        |license the material under the project's open source license and warrant that
+        |you have the legal authority to do so.
         |
         |$licenseText
         |""".stripMargin

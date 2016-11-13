@@ -1,11 +1,7 @@
-val sbtFresh = project
-  .copy(id = "sbt-fresh")
+val `sbt-fresh` =
+  project
   .in(file("."))
   .enablePlugins(AutomateHeaderPlugin, GitVersioning)
-
-organization := "de.heikoseeberger"
-name         := "sbt-fresh"
-licenses     += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
 
 scalacOptions ++= Vector(
   "-unchecked",
@@ -14,24 +10,16 @@ scalacOptions ++= Vector(
   "-target:jvm-1.6",
   "-encoding", "UTF-8"
 )
-
 unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value)
 unmanagedSourceDirectories.in(Test)    := Vector(scalaSource.in(Test).value)
 
-libraryDependencies ++= Vector(
-  "org.eclipse.jgit" % "org.eclipse.jgit" % "4.4.1.201607150455-r"
-)
-
-initialCommands := """|import de.heikoseeberger.sbtfresh._""".stripMargin
+organization := "de.heikoseeberger"
+licenses     += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
 
 sbtPlugin         := true
 publishMavenStyle := false
 
-scriptedSettings
-scriptedLaunchOpts := scriptedLaunchOpts.value ++ Vector(
-  "-Xmx1024M",
-  s"-Dplugin.version=${version.value}"
-)
+libraryDependencies += "org.eclipse.jgit" % "org.eclipse.jgit" % "4.5.0.201609210915-r"
 
 git.useGitDescribe := true
 
@@ -41,4 +29,11 @@ scalariformPreferences := scalariformPreferences.value
   .setPreference(AlignSingleLineCaseStatements.MaxArrowIndent, 100)
   .setPreference(DoubleIndentClassDeclaration, true)
 
-headers := Map("scala" -> de.heikoseeberger.sbtheader.license.Apache2_0("2016", "Heiko Seeberger"))
+import de.heikoseeberger.sbtheader.license._
+headers := Map("scala" -> Apache2_0("2016", "Heiko Seeberger"))
+
+scriptedSettings
+scriptedLaunchOpts ++= Vector(
+  "-Xmx1024M",
+  s"-Dplugin.version=${version.value}"
+)

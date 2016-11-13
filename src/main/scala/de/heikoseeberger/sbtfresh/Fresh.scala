@@ -43,6 +43,7 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
   def writeBuildProperties(): Path = write("project/build.properties", Template.buildProperties)
 
   def writeBuildSbt(): Path = write("build.sbt", Template.buildSbt(organization, name, packageSegments))
+
   def writeBuildScala(): Path = write("project/Build.scala", Template.buildScala(organization, author, license))
 
   def writeDependencies(): Path = write("project/Dependencies.scala", Template.dependencies)
