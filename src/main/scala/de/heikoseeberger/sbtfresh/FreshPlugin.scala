@@ -16,6 +16,7 @@
 
 package de.heikoseeberger.sbtfresh
 
+import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
 import sbt.{
@@ -28,28 +29,32 @@ import sbt.{
   ThisBuild,
   settingKey
 }
+import scala.collection.breakOut
 
 object FreshPlugin extends AutoPlugin {
 
   final object autoImport {
-    val freshAuthor: SettingKey[String] =
-      settingKey[String](
-        s"""Author – value of "user.name" sys prop or "$FreshAuthor" by default""")
-
-    val freshName: SettingKey[String] =
-      settingKey[String](
-        s"""Build name – name of build directory by default""")
 
     val freshOrganization: SettingKey[String] =
-      settingKey[String](
-        s"""Build organization – "$FreshOrganization" by default""")
+      settingKey(s"""Build organization – "$DefaultOrganization" by default""")
 
-    val freshLicense: SettingKey[String] =
-      settingKey[String]("License kind")
+    val freshName: SettingKey[String] =
+      settingKey(s"""Build name – name of build directory by default""")
+
+    val freshAuthor: SettingKey[String] =
+      settingKey(
+        s"""Author – value of "user.name" system property or "$DefaultAuthor" by default"""
+      )
+
+    val freshLicense: SettingKey[Option[License]] =
+      settingKey(
+        s"""Optional license (one of $License) – `$DefaultLicense` by default"""
+      )
 
     val freshSetUpGit: SettingKey[Boolean] =
-      settingKey[Boolean](
-        "Initialize a Git repo and create an initial commit – true by default")
+      settingKey(
+        "Initialize a Git repo and create an initial commit – `true` by default"
+      )
   }
 
   private final object Arg {
@@ -63,12 +68,12 @@ object FreshPlugin extends AutoPlugin {
   private final case class Args(organization: Option[String],
                                 name: Option[String],
                                 author: Option[String],
-                                license: Option[String],
+                                license: Option[License],
                                 setUpGit: Option[Boolean])
 
-  private final val FreshOrganization = "default"
-  private final val FreshAuthor       = "default"
-  private final val FreshLicense      = "apache"
+  private final val DefaultOrganization = "default"
+  private final val DefaultAuthor       = "default"
+  private final val DefaultLicense      = Some(License.Apache2_0)
 
   override def requires = JvmPlugin
 
@@ -76,13 +81,15 @@ object FreshPlugin extends AutoPlugin {
 
   override def projectSettings = {
     import autoImport._
-    super.projectSettings ++ Vector(
+
+    super.projectSettings ++
+    Vector(
       Keys.commands += Command("fresh")(parser)(effect),
-      freshOrganization := FreshOrganization,
-      freshName         := Keys.baseDirectory.value.getName,
-      freshAuthor       := sys.props.getOrElse("user.name", FreshAuthor),
-      freshLicense      := FreshLicense,
-      freshSetUpGit     := true
+      freshOrganization := DefaultOrganization,
+      freshName := Keys.baseDirectory.value.getName,
+      freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
+      freshLicense := DefaultLicense,
+      freshSetUpGit := true
     )
   }
 
@@ -90,11 +97,18 @@ object FreshPlugin extends AutoPlugin {
     import DefaultParsers._
     def arg[A](name: String, parser: Parser[A]) =
       Space ~> name.decapitalize ~> "=" ~> parser
-    val args = arg(Arg.Organization, NotQuoted).? ~
-        arg(Arg.Name, NotQuoted).? ~
-        arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
-        arg(Arg.License, token(StringBasic)).? ~
-        arg(Arg.SetUpGit, Bool).?
+    val licenseParser = {
+      val nameToLicense: Map[String, License] =
+        License.values.map(l => l.toString -> l)(breakOut)
+      val head +: tail = License.values.toVector.map(_.toString).sorted
+      tail.foldLeft(head: Parser[String])(_ | _).map(nameToLicense)
+    }
+    val args =
+      arg(Arg.Organization, NotQuoted).? ~
+      arg(Arg.Name, NotQuoted).? ~
+      arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
+      arg(Arg.License, licenseParser).? ~
+      arg(Arg.SetUpGit, Bool).?
     args.map { case o ~ n ~ a ~ l ~ g => Args(o, n, a, l, g) }
   }
 
@@ -107,7 +121,7 @@ object FreshPlugin extends AutoPlugin {
     val organization = args.organization.getOrElse(setting(freshOrganization))
     val name         = args.name.getOrElse(setting(freshName))
     val author       = args.author.getOrElse(setting(freshAuthor))
-    val license      = args.license.getOrElse(setting(freshLicense))
+    val license      = args.license.orElse(setting(freshLicense))
     val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)

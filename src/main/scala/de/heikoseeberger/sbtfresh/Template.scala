@@ -16,57 +16,12 @@
 
 package de.heikoseeberger.sbtfresh
 
+import de.heikoseeberger.sbtfresh.license.License
 import java.util.Calendar
 
 private object Template {
 
-  sealed trait License
-  object License {
-    case object ApacheV2   extends License
-    case object MIT        extends License
-    case object BSD        extends License
-    case object BSD3Clause extends License
-    case object GPLV3      extends License
-    case object None       extends License
-  }
-
   private val year = Calendar.getInstance().get(Calendar.YEAR)
-
-  private val licensesPaths =
-    Map(
-      License.ApacheV2   -> "/ApacheLicense",
-      License.MIT        -> "/MitLicense",
-      License.BSD        -> "/BSDLicense",
-      License.BSD3Clause -> "/BSD3ClauseLicense",
-      License.GPLV3      -> "/GPL3License"
-    )
-
-  private val headerPluginLicenseSetting =
-    Map(
-      License.ApacheV2   -> "Apache2_0",
-      License.MIT        -> "MIT",
-      License.BSD        -> "BSD2Clause",
-      License.BSD3Clause -> "BSD3Clause",
-      License.GPLV3      -> "GPLv3"
-    )
-
-  private val buildScalaLicenseMetaData =
-    Map(
-      License.ApacheV2   -> """("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))""",
-      License.MIT        -> """("MIT", url("https://opensource.org/licenses/MIT"))""",
-      License.BSD        -> """("BSD-2-Clause", url("https://opensource.org/licenses/BSD-2-Clause"))""",
-      License.BSD3Clause -> """("BSD-3-Clause", url("https://opensource.org/licenses/BSD-3-Clause"))""",
-      License.GPLV3      -> """("GPLv3", url("http://www.gnu.org/licenses/gpl-3.0.en.html"))"""
-    )
-
-  private val readmeLicenseMetaData =
-    Map(
-      License.ApacheV2   -> """[Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)""",
-      License.MIT        -> """[MIT License"](https://opensource.org/licenses/MIT)""",
-      License.BSD        -> """[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause)""",
-      License.BSD3Clause -> """[BSD 3 Clause License](https://opensource.org/licenses/BSD-3-Clause)""",
-      License.GPLV3      -> """[GPLv3 License](http://www.gnu.org/licenses/gpl-3.0.en.html)"""
-    )
 
   def buildProperties: String =
     """|sbt.version = 0.13.13
@@ -91,33 +46,27 @@ private object Template {
 
   def buildScala(organization: String,
                  author: String,
-                 license: String): String = {
-    val kind                = getLicenseKind(license)
-    val licenseMetaData     = buildScalaLicenseMetaData.get(kind)
-    val headerPluginLicense = headerPluginLicenseSetting.get(kind)
+                 license: Option[License]): String = {
+    val licenseSettings = {
+      def settings(license: License) =
+        s"""|
+            |      licenses += ${license.sbtSettingValue},
+            |      mappings.in(Compile, packageBin)
+            |        += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+      license.map(settings).getOrElse("")
+    }
 
-    def createLicenseMetaData =
-      licenseMetaData match {
-        case Some(l) =>
-          s"""|
-              |      licenses += $l,
-              |      mappings.in(Compile, packageBin)
-              |        += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
-        case None =>
-          ""
-      }
-
-    def createHeaderPluginLicense =
-      headerPluginLicense match {
-        case Some(h) =>
-          s"""headers := Map("scala" -> $h("$year", "$author"))"""
-        case None =>
-          s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
-        \"\"\"|/*
-        |           | * Copyright $year $author
-        |           | */
-        |           |\"\"\".stripMargin))"""
-      }
+    val headerSettings = {
+      def settings(license: License) =
+        s"""headers := Map("scala" -> $license("$year", "$author"))"""
+      def fallback =
+        s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
+      $TQ|/*
+         |           | * Copyright $year $author
+         |           | */
+         |           |$TQ.stripMargin))"""
+      license.fold(fallback)(settings)
+    }
 
     s"""|import com.typesafe.sbt.GitPlugin
         |import com.typesafe.sbt.GitPlugin.autoImport._
@@ -157,7 +106,7 @@ private object Template {
         |        Vector(scalaSource.in(Test).value),
         |
         |      // Publish settings
-        |      organization := "$organization",$createLicenseMetaData
+        |      organization := "$organization",$licenseSettings
         |
         |      // scalafmt settings
         |      formatSbtFiles := false,
@@ -168,7 +117,7 @@ private object Template {
         |      git.useGitDescribe := true,
         |
         |      // Header settings
-        |      $createHeaderPluginLicense
+        |      $headerSettings
         |    )
         |}
         |""".stripMargin
@@ -224,17 +173,6 @@ private object Template {
        |*.log
        |""".stripMargin
 
-  def license(kind: String): String = {
-    val licenseKind: License = getLicenseKind(kind)
-
-    licensesPaths.map {
-      case (k, v) if k == licenseKind =>
-        val stream = getClass.getResourceAsStream(v)
-        scala.io.Source.fromInputStream(stream).getLines().mkString("\n")
-      case _ => ""
-    }.reduceLeft(_ + _)
-  }
-
   def notice(author: String): String =
     s"""|Copyright $year $author
         |""".stripMargin
@@ -261,17 +199,14 @@ private object Template {
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
 
-  def readme(name: String, license: String): String = {
-    val licenseMetaData = readmeLicenseMetaData.get(getLicenseKind(license))
-
-    val licenseText = licenseMetaData match {
-      case Some(text) =>
+  def readme(name: String, license: Option[License]): String = {
+    val licenseText = {
+      def text(license: License) =
         s"""|## License ##
             |
-            |This code is open source software licensed under the $text.""".stripMargin
-      case None => ""
+            |This code is open source software licensed under the ${license.readmeValue} License.""".stripMargin
+      license.map(text).getOrElse("")
     }
-
     s"""|# $name #
         |
         |Welcome to $name!
@@ -306,14 +241,4 @@ private object Template {
        |  s"[$project]> "
        |}
        |""".stripMargin
-
-  private def getLicenseKind(kind: String) =
-    kind.toLowerCase() match {
-      case "apache"     => License.ApacheV2
-      case "mit"        => License.MIT
-      case "bsd"        => License.BSD
-      case "bsd3clause" => License.BSD3Clause
-      case "gpl3"       => License.GPLV3
-      case _            => License.None
-    }
 }

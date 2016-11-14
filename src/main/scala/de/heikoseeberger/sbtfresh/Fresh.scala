@@ -16,24 +16,24 @@
 
 package de.heikoseeberger.sbtfresh
 
+import de.heikoseeberger.sbtfresh.license.License
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
 import org.eclipse.jgit.api.Git
 
-private class Fresh(buildDir: Path,
-                    organization: String,
-                    name: String,
-                    author: String,
-                    license: String) {
+private final class Fresh(buildDir: Path,
+                          organization: String,
+                          name: String,
+                          author: String,
+                          license: Option[License]) {
 
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
 
   private val packageSegments = {
-    val segments = (organization.segments ++ name.segments).map(_.toLowerCase)
-    val (tail, _) =
-      segments.tail.zip(segments).filter { case (s1, s2) => s1 != s2 }.unzip
-    segments.head +: tail
+    val all  = (organization.segments ++ name.segments).map(_.toLowerCase)
+    val tail = all.tail.zip(all).collect { case (s1, s2) if s1 != s2 => s1 }
+    all.head +: tail
   }
 
   def initialCommit(): Unit = {
@@ -58,11 +58,8 @@ private class Fresh(buildDir: Path,
   def writeGitignore(): Path =
     write(".gitignore", Template.gitignore)
 
-  def writeLicense(): Unit = {
-    val l = Template.license(license)
-    val r = l.replaceAll("<YEAR>", "2016").replaceAll("<OWNER>", author)
-    write("LICENSE", r)
-  }
+  def writeLicense(): Unit =
+    license.foreach(l => copy("LICENSE", l.toString))
 
   def writeNotice(): Path =
     write("NOTICE", Template.notice(author))
@@ -85,10 +82,16 @@ private class Fresh(buildDir: Path,
   def writeShellPrompt(): Path =
     write("shell-prompt.sbt", Template.shellPrompt)
 
-  private def write(path: String, content: String) = {
-    val resolvedPath = buildDir.resolve(path)
-    if (resolvedPath.getParent != null)
-      Files.createDirectories(resolvedPath.getParent)
-    Files.write(resolvedPath, content.getBytes(UTF_8))
+  private def write(path: String, content: String) =
+    Files.write(resolve(path), content.getBytes(UTF_8))
+
+  private def copy(path: String, name: String) =
+    Files.copy(getClass.getResourceAsStream(s"/$name"), resolve(path))
+
+  private def resolve(path: String) = {
+    val resolved = buildDir.resolve(path)
+    if (resolved.getParent != null)
+      Files.createDirectories(resolved.getParent)
+    resolved
   }
 }
