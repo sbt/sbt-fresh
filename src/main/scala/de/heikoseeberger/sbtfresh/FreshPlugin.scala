@@ -29,7 +29,6 @@ import sbt.{
   ThisBuild,
   settingKey
 }
-import scala.collection.breakOut
 
 object FreshPlugin extends AutoPlugin {
 
@@ -46,15 +45,19 @@ object FreshPlugin extends AutoPlugin {
         s"""Author – value of "user.name" system property or "$DefaultAuthor" by default"""
       )
 
-    val freshLicense: SettingKey[Option[License]] =
+    val freshLicense: SettingKey[Option[License]] = {
       settingKey(
-        s"""Optional license (one of $License) – `$DefaultLicense` by default"""
+        s"""Optional license (one of $licenseIds) – `$DefaultLicense` by default"""
       )
+    }
 
     val freshSetUpGit: SettingKey[Boolean] =
       settingKey(
         "Initialize a Git repo and create an initial commit – `true` by default"
       )
+
+    private def licenseIds =
+      License.values.toVector.sortBy(_.id).mkString(", ")
   }
 
   private final object Arg {
@@ -73,7 +76,7 @@ object FreshPlugin extends AutoPlugin {
 
   private final val DefaultOrganization = "default"
   private final val DefaultAuthor       = "default"
-  private final val DefaultLicense      = Some(License.Apache2_0)
+  private final val DefaultLicense      = Some(License.apache20)
 
   override def requires = JvmPlugin
 
@@ -97,12 +100,11 @@ object FreshPlugin extends AutoPlugin {
     import DefaultParsers._
     def arg[A](name: String, parser: Parser[A]) =
       Space ~> name.decapitalize ~> "=" ~> parser
-    val licenseParser = {
-      val nameToLicense: Map[String, License] =
-        License.values.map(l => l.toString -> l)(breakOut)
-      val head +: tail = License.values.toVector.map(_.toString).sorted
-      tail.foldLeft(head: Parser[String])(_ | _).map(nameToLicense)
-    }
+    val licenseParser =
+      License.values.toVector
+        .sortBy(_.id)
+        .map(l => (l.id: Parser[String]).map(_ => l))
+        .reduceLeft(_ | _)
     val args =
       arg(Arg.Organization, NotQuoted).? ~
       arg(Arg.Name, NotQuoted).? ~

@@ -48,17 +48,20 @@ private object Template {
                  author: String,
                  license: Option[License]): String = {
     val licenseSettings = {
-      def settings(license: License) =
+      def settings(license: License) = {
+        val License(_, name, url, _) = license
         s"""|
-            |      licenses += ${license.sbtSettingValue},
+            |      licenses += ("$name",
+            |                   url("$url")),
             |      mappings.in(Compile, packageBin)
             |        += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+      }
       license.map(settings).getOrElse("")
     }
 
     val headerSettings = {
       def settings(license: License) =
-        s"""headers := Map("scala" -> $license("$year", "$author"))"""
+        s"""headers := Map("scala" -> ${license.headerName}("$year", "$author"))"""
       def fallback =
         s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
       $TQ|/*
@@ -201,10 +204,13 @@ private object Template {
 
   def readme(name: String, license: Option[License]): String = {
     val licenseText = {
-      def text(license: License) =
+      def text(license: License) = {
+        val License(_, name, url, _) = license
         s"""|## License ##
             |
-            |This code is open source software licensed under the ${license.readmeValue} License.""".stripMargin
+            |This code is open source software licensed under the
+            |[$name]($url) license.""".stripMargin
+      }
       license.map(text).getOrElse("")
     }
     s"""|# $name #
@@ -226,13 +232,12 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|style               = defaultWithAlign
-       |danglingParentheses = true
-       |indentOperator      = spray
+    """|style = defaultWithAlign
        |
-       |spaces {
-       |  inImportCurlyBraces = true
-       |}
+       |danglingParentheses        = true
+       |indentOperator             = spray
+       |spaces.inImportCurlyBraces = true
+       |unindentTopLevelOperators  = true
        |""".stripMargin
 
   def shellPrompt: String =

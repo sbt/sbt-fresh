@@ -19,6 +19,7 @@ package de.heikoseeberger.sbtfresh
 import de.heikoseeberger.sbtfresh.license.License
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import org.eclipse.jgit.api.Git
 
 private final class Fresh(buildDir: Path,
@@ -59,7 +60,7 @@ private final class Fresh(buildDir: Path,
     write(".gitignore", Template.gitignore)
 
   def writeLicense(): Unit =
-    license.foreach(l => copy("LICENSE", l.toString))
+    license.foreach(l => copy("LICENSE", l.id))
 
   def writeNotice(): Path =
     write("NOTICE", Template.notice(author))
@@ -86,7 +87,9 @@ private final class Fresh(buildDir: Path,
     Files.write(resolve(path), content.getBytes(UTF_8))
 
   private def copy(path: String, name: String) =
-    Files.copy(getClass.getResourceAsStream(s"/$name"), resolve(path))
+    Files.copy(getClass.getResourceAsStream(s"/$name"),
+               resolve(path),
+               REPLACE_EXISTING)
 
   private def resolve(path: String) = {
     val resolved = buildDir.resolve(path)
