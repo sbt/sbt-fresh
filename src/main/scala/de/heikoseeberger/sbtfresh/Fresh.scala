@@ -16,22 +16,25 @@
 
 package de.heikoseeberger.sbtfresh
 
+import de.heikoseeberger.sbtfresh.license.License
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import org.eclipse.jgit.api.Git
 
-private class Fresh(buildDir: Path, organization: String, name: String, author: String, license: String) {
+private final class Fresh(buildDir: Path,
+                          organization: String,
+                          name: String,
+                          author: String,
+                          license: Option[License]) {
+
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
 
   private val packageSegments = {
-    val segments = (organization.segments ++ name.segments).map(_.toLowerCase)
-    val (tail, _) = segments
-      .tail
-      .zip(segments)
-      .filter { case (s1, s2) => s1 != s2 }
-      .unzip
-    segments.head +: tail
+    val all  = (organization.segments ++ name.segments).map(_.toLowerCase)
+    val tail = all.tail.zip(all).collect { case (s1, s2) if s1 != s2 => s1 }
+    all.head +: tail
   }
 
   def initialCommit(): Unit = {
@@ -40,39 +43,58 @@ private class Fresh(buildDir: Path, organization: String, name: String, author: 
     git.commit().setMessage("Fresh project, created with sbt-fresh").call()
   }
 
-  def writeBuildProperties(): Path = write("project/build.properties", Template.buildProperties)
+  def writeBuildProperties(): Path =
+    write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(): Path = write("build.sbt", Template.buildSbt(organization, name, packageSegments))
-  def writeBuildScala(): Path = write("project/Build.scala", Template.buildScala(organization, author, license))
+  def writeBuildSbt(): Path =
+    write("build.sbt", Template.buildSbt(organization, name, packageSegments))
 
-  def writeDependencies(): Path = write("project/Dependencies.scala", Template.dependencies)
+  def writeBuildScala(): Path =
+    write("project/Build.scala",
+          Template.buildScala(organization, author, license))
 
-  def writeGitignore(): Path = write(".gitignore", Template.gitignore)
+  def writeDependencies(): Path =
+    write("project/Dependencies.scala", Template.dependencies)
 
-  def writeLicense(): Unit = {
-    val l = Template.license(license)
-    val r = l.replaceAll("<YEAR>", "2016").replaceAll("<OWNER>", author)
-    write("LICENSE", r)
+  def writeGitignore(): Path =
+    write(".gitignore", Template.gitignore)
+
+  def writeLicense(): Unit =
+    license.foreach(l => copy("LICENSE", l.id))
+
+  def writeNotice(): Path =
+    write("NOTICE", Template.notice(author))
+
+  def writePackage(): Path = {
+    val path =
+      packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala"
+    write(path, Template.`package`(packageSegments, author))
   }
 
-  def writeNotice(): Path = write("NOTICE", Template.notice(author))
+  def writePlugins(): Path =
+    write("project/plugins.sbt", Template.plugins)
 
-  def writePackage(): Path = write(
-    packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala",
-    Template.`package`(packageSegments, author)
-  )
+  def writeReadme(): Path =
+    write("README.md", Template.readme(name, license))
 
-  def writePlugins(): Path = write("project/plugins.sbt", Template.plugins)
+  def writeScalafmt(): Path =
+    write(".scalafmt.conf", Template.scalafmtConf)
 
-  def writeReadme(): Path = write("README.md", Template.readme(name, license))
+  def writeShellPrompt(): Path =
+    write("shell-prompt.sbt", Template.shellPrompt)
 
-  def writeScalafmt(): Path = write(".scalafmt.conf", Template.scalafmtConf)
+  private def write(path: String, content: String) =
+    Files.write(resolve(path), content.getBytes(UTF_8))
 
-  def writeShellPrompt(): Path = write("shell-prompt.sbt", Template.shellPrompt)
+  private def copy(path: String, name: String) =
+    Files.copy(getClass.getResourceAsStream(s"/$name"),
+               resolve(path),
+               REPLACE_EXISTING)
 
-  private def write(path: String, content: String) = {
-    val resolvedPath = buildDir.resolve(path)
-    if (resolvedPath.getParent != null) Files.createDirectories(resolvedPath.getParent)
-    Files.write(resolvedPath, content.getBytes(UTF_8))
+  private def resolve(path: String) = {
+    val resolved = buildDir.resolve(path)
+    if (resolved.getParent != null)
+      Files.createDirectories(resolved.getParent)
+    resolved
   }
 }

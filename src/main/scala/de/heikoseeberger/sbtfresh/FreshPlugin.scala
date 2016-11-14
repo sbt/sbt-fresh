@@ -16,69 +16,115 @@
 
 package de.heikoseeberger.sbtfresh
 
+import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
-import sbt.{ AutoPlugin, Command, Keys, Project, SettingKey, State, ThisBuild, settingKey }
+import sbt.{
+  AutoPlugin,
+  Command,
+  Keys,
+  Project,
+  SettingKey,
+  State,
+  ThisBuild,
+  settingKey
+}
 
 object FreshPlugin extends AutoPlugin {
 
-  object autoImport {
-    val freshAuthor = settingKey[String](s"""Author – value of "user.name" sys prop or "$FreshAuthor" by default""")
-    val freshName = settingKey[String](s"""Build name – name of build directory by default""")
-    val freshOrganization = settingKey[String](s"""Build organization – "$FreshOrganization" by default""")
-    val freshLicense = settingKey[String]("License kind")
-    val freshSetUpGit = settingKey[Boolean]("Initialize a Git repo and create an initial commit – true by default")
+  final object autoImport {
+
+    val freshOrganization: SettingKey[String] =
+      settingKey(s"""Build organization – "$DefaultOrganization" by default""")
+
+    val freshName: SettingKey[String] =
+      settingKey(s"""Build name – name of build directory by default""")
+
+    val freshAuthor: SettingKey[String] =
+      settingKey(
+        s"""Author – value of "user.name" system property or "$DefaultAuthor" by default"""
+      )
+
+    val freshLicense: SettingKey[Option[License]] = {
+      settingKey(
+        s"""Optional license (one of $licenseIds) – `$DefaultLicense` by default"""
+      )
+    }
+
+    val freshSetUpGit: SettingKey[Boolean] =
+      settingKey(
+        "Initialize a Git repo and create an initial commit – `true` by default"
+      )
+
+    private def licenseIds =
+      License.values.toVector.sortBy(_.id).mkString(", ")
   }
 
-  private object Arg {
+  private final object Arg {
     final val Organization = "organization"
-    final val Name = "name"
-    final val Author = "author"
-    final val License = "license"
-    final val SetUpGit = "setUpGit"
+    final val Name         = "name"
+    final val Author       = "author"
+    final val License      = "license"
+    final val SetUpGit     = "setUpGit"
   }
 
-  private case class Args(organization: Option[String], name: Option[String], author: Option[String], license: Option[String], setUpGit: Option[Boolean])
+  private final case class Args(organization: Option[String],
+                                name: Option[String],
+                                author: Option[String],
+                                license: Option[License],
+                                setUpGit: Option[Boolean])
 
-  private final val FreshOrganization = "default"
-  private final val FreshAuthor = "default"
-  private final val FreshLicense = "apache"
+  private final val DefaultOrganization = "default"
+  private final val DefaultAuthor       = "default"
+  private final val DefaultLicense      = Some(License.apache20)
 
   override def requires = JvmPlugin
 
   override def trigger = allRequirements
 
-  override def projectSettings = super.projectSettings ++ Vector(
-    Keys.commands += freshCommand,
-    autoImport.freshOrganization := FreshOrganization,
-    autoImport.freshName := Keys.baseDirectory.value.getName,
-    autoImport.freshAuthor := sys.props.get("user.name").getOrElse(FreshAuthor),
-    autoImport.freshLicense := FreshLicense,
-    autoImport.freshSetUpGit := true
-  )
+  override def projectSettings = {
+    import autoImport._
 
-  private def freshCommand = Command("fresh")(parser)(effect)
+    super.projectSettings ++
+    Vector(
+      Keys.commands += Command("fresh")(parser)(effect),
+      freshOrganization := DefaultOrganization,
+      freshName := Keys.baseDirectory.value.getName,
+      freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
+      freshLicense := DefaultLicense,
+      freshSetUpGit := true
+    )
+  }
 
   private def parser(state: State) = {
     import DefaultParsers._
-    def arg[A](name: String, parser: Parser[A]) = Space ~> name.decapitalize ~> "=" ~> parser
-    val args = arg(Arg.Organization, NotQuoted).? ~
+    def arg[A](name: String, parser: Parser[A]) =
+      Space ~> name.decapitalize ~> "=" ~> parser
+    val licenseParser =
+      License.values.toVector
+        .sortBy(_.id)
+        .map(l => (l.id: Parser[String]).map(_ => l))
+        .reduceLeft(_ | _)
+    val args =
+      arg(Arg.Organization, NotQuoted).? ~
       arg(Arg.Name, NotQuoted).? ~
       arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
-      arg(Arg.License, token(StringBasic)).? ~
+      arg(Arg.License, licenseParser).? ~
       arg(Arg.SetUpGit, Bool).?
     args.map { case o ~ n ~ a ~ l ~ g => Args(o, n, a, l, g) }
   }
 
   private def effect(state: State, args: Args) = {
+    import autoImport._
+
     def setting[A](key: SettingKey[A]) = Project.extract(state).get(key)
 
-    val buildDir = setting(Keys.baseDirectory.in(ThisBuild)).toPath
-    val organization = args.organization.getOrElse(setting(autoImport.freshOrganization))
-    val name = args.name.getOrElse(setting(autoImport.freshName))
-    val author = args.author.getOrElse(setting(autoImport.freshAuthor))
-    val license = args.license.getOrElse(setting(autoImport.freshLicense))
-    val setUpGit = args.setUpGit.getOrElse(setting(autoImport.freshSetUpGit))
+    val buildDir     = setting(Keys.baseDirectory.in(ThisBuild)).toPath
+    val organization = args.organization.getOrElse(setting(freshOrganization))
+    val name         = args.name.getOrElse(setting(freshName))
+    val author       = args.author.getOrElse(setting(freshAuthor))
+    val license      = args.license.orElse(setting(freshLicense))
+    val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeBuildProperties()
@@ -93,7 +139,6 @@ object FreshPlugin extends AutoPlugin {
     fresh.writeReadme()
     fresh.writeScalafmt()
     fresh.writeShellPrompt()
-
     if (setUpGit) fresh.initialCommit()
 
     state.reboot(true)
