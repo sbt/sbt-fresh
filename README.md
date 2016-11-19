@@ -3,9 +3,13 @@
 sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which
 is already prepared for multiple modules: It creates an sbt build according to
 established best practices, creates a useful package object for the root
-package, initializes a Git repository and creates an initial commit, etc. Notice
-that the build definition created by sbt-fresh is incompatible with the
--Yno-adapted-args scalac option.
+package, initializes a Git repository and creates an initial commit, etc.
+
+Notice:
+- The created `project/Build.scala` is not an old-style and deprecated `.scala`
+  build definition, but an auto plugin defining common settings for all modules
+- The build definition created by sbt-fresh is incompatible with the
+  -Yno-adapted-args scalac option.
 
 Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/0.13/plugins/plugins.sbt`:
@@ -19,16 +23,25 @@ most probably sits at `~/.sbt/0.13/build.sbt`:
 
 ``` scala
 import de.heikoseeberger.sbtfresh.FreshPlugin.autoImport._
-freshOrganization := "de.heikoseeberger" // Build organization – "default" by default
-freshName         :=  ???                // Build name – name of build directory by default; doesn't make much sense as a permanent setting
-freshAuthor       := "Heiko Seeberger"   // Author – value of "user.name" system property or "default" by default
-freshLicense      := "apache20"          // License kind, see avalable options below – `apache20` by default
-freshSetUpGit     := true                // Initialize a Git repo and create an initial commit – true by default
+import de.heikoseeberger.sbtfresh.license.License
+
+freshOrganization := "doe.john"        // Organization – "default" by default
+freshAuthor       := "John Doe"        // Author – value of "user.name" system property or "default" by default
+freshLicense      := Some(License.mit) // Optional license – `apache20` by default
+freshSetUpGit     := true              // Initialize a Git repo and create an initial commit – `true` by default
+```
+
+Other settings which probably shouldn't be set globally:
+
+``` scala
+freshName := ??? // Name – name of build directory by default; doesn't make much sense as a permanent setting
+
 ```
 
 In order to scaffold a fresh sbt project, just start sbt in an empty directory.
 Then call the `fresh` command, optionally passing one or more of the following
-arguments which override the respective settings:
+arguments (hit tab for auto completion) which override the respective settings:
+
 - `organization`
 - `name`
 - `author`
@@ -38,10 +51,10 @@ arguments which override the respective settings:
 Example:
 
 ```
-sbt> fresh license=mit
+sbt> fresh license=bsd3 setUpGit=false
 ```
 
-The following license arguments are available:
+The following values are available for the license argument:
 - `apache20`
 - `bsd2`
 - `bsd3`
@@ -60,7 +73,7 @@ sbt-fresh creates a project with the following layout:
 + NOTICE
 + project
 --+ build.properties    // sbt version
---+ Build.scala         // common settings for all modules
+--+ Build.scala         // auto plugin with common settings for all modules
 --+ Dependencies.scala  // values for library dependencies
 --+ plugins.sbt         // sbt-git, sbt-header, sbt-scalafmt
 + README.md
