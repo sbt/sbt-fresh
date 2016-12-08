@@ -130,7 +130,7 @@ private object Template {
     """|import sbt._
        |
        |object Version {
-       |  final val Scala     = "2.12.0"
+       |  final val Scala     = "2.12.1"
        |  final val ScalaTest = "3.0.1"
        |}
        |
@@ -236,6 +236,8 @@ private object Template {
        |
        |danglingParentheses        = true
        |indentOperator             = spray
+       |maxColumn                  = 120
+       |rewrite.rules              = [RedundantBraces, RedundantParens, SortImports]
        |spaces.inImportCurlyBraces = true
        |unindentTopLevelOperators  = true
        |""".stripMargin
