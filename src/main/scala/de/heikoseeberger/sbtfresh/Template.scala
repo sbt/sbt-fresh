@@ -236,7 +236,6 @@ private object Template {
        |
        |danglingParentheses        = true
        |indentOperator             = spray
-       |maxColumn                  = 120
        |rewrite.rules              = [RedundantBraces, RedundantParens, SortImports]
        |spaces.inImportCurlyBraces = true
        |unindentTopLevelOperators  = true
