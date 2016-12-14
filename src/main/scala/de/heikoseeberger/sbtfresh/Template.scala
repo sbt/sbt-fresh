@@ -17,11 +17,11 @@
 package de.heikoseeberger.sbtfresh
 
 import de.heikoseeberger.sbtfresh.license.License
-import java.util.Calendar
+import java.time.LocalDate.now
 
 private object Template {
 
-  private val year = Calendar.getInstance().get(Calendar.YEAR)
+  private val year = now().getYear
 
   def buildProperties: String =
     """|sbt.version = 0.13.13
@@ -29,32 +29,20 @@ private object Template {
 
   def buildSbt(organization: String,
                name: String,
-               packageSegments: Vector[String]): String = {
-    val `package` = packageSegments.mkString(".")
-    val n         = if (name.segments.mkString == name) name else s"`$name`"
-    s"""|lazy val $n =
-        |  project.in(file(".")).enablePlugins(AutomateHeaderPlugin, GitVersioning)
-        |
-        |libraryDependencies ++= Vector(
-        |  Library.scalaTest % "test"
-        |)
-        |
-        |initialCommands := $TQ|import ${`package`}._
-        |                      |$TQ.stripMargin
-        |""".stripMargin
-  }
+               packageSegments: Vector[String],
+               author: String,
+               license: Option[License]): String = {
+    val nameIdentifier =
+      if (name.segments.mkString == name) name else s"`$name`"
 
-  def buildScala(organization: String,
-                 author: String,
-                 license: Option[License]): String = {
     val licenseSettings = {
       def settings(license: License) = {
         val License(_, name, url, _) = license
         s"""|
-            |      licenses += ("$name",
-            |                   url("$url")),
-            |      mappings.in(Compile, packageBin)
-            |        += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+            |    licenses += ("$name",
+            |                 url("$url")),
+            |    mappings.in(Compile, packageBin) +=
+            |      baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
       }
       license.map(settings).getOrElse("")
     }
@@ -63,81 +51,93 @@ private object Template {
       def settings(license: License) =
         s"""headers := Map("scala" -> ${license.headerName}("$year", "$author"))"""
       def fallback =
-        s"""headers := Map("scala" -> (HeaderPattern.cStyleBlockComment,
-      $TQ|/*
-         |           | * Copyright $year $author
-         |           | */
-         |           |$TQ.stripMargin))"""
+        s"""|headers := Map(
+            |      "scala" -> (HeaderPattern.cStyleBlockComment,
+            |                  $TQ|/*
+            ||                     | * Copyright year author
+            ||                     | */$TQ.stripMargin)
+            |    )""".stripMargin
       license.fold(fallback)(settings)
     }
 
-    s"""|import com.typesafe.sbt.GitPlugin
-        |import com.typesafe.sbt.GitPlugin.autoImport._
-        |import de.heikoseeberger.sbtheader.HeaderPlugin
-        |import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
-        |import de.heikoseeberger.sbtheader.HeaderPattern
-        |import de.heikoseeberger.sbtheader.license._
-        |import org.scalafmt.sbt.ScalaFmtPlugin
-        |import org.scalafmt.sbt.ScalaFmtPlugin.autoImport._
-        |import sbt._
-        |import sbt.Keys._
-        |import sbt.plugins.JvmPlugin
+    s"""|// *****************************************************************************
+        |// Projects
+        |// *****************************************************************************
         |
-        |object Build extends AutoPlugin {
+        |lazy val $nameIdentifier =
+        |  project
+        |    .in(file("."))
+        |    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+        |    .settings(settings)
         |
-        |  override def requires =
-        |    JvmPlugin && HeaderPlugin && GitPlugin && ScalaFmtPlugin
+        |// *****************************************************************************
+        |// Library dependencies
+        |// *****************************************************************************
         |
-        |  override def trigger = allRequirements
+        |lazy val version =
+        |  new {
+        |    val scalaCheck = "1.13.4"
+        |    val scalaTest  = "3.0.1"
+        |  }
         |
-        |  override def projectSettings =
-        |    reformatOnCompileSettings ++
-        |    Vector(
-        |      // Compile settings
-        |      scalaVersion := Version.Scala,
-        |      crossScalaVersions := Vector(scalaVersion.value),
-        |      scalacOptions ++= Vector(
-        |        "-unchecked",
-        |        "-deprecation",
-        |        "-language:_",
-        |        "-target:jvm-1.8",
-        |        "-encoding", "UTF-8"
-        |      ),
-        |      unmanagedSourceDirectories.in(Compile) :=
-        |        Vector(scalaSource.in(Compile).value),
-        |      unmanagedSourceDirectories.in(Test) :=
-        |        Vector(scalaSource.in(Test).value),
-        |
-        |      // Publish settings
-        |      organization := "$organization",$licenseSettings
-        |
-        |      // scalafmt settings
-        |      formatSbtFiles := false,
-        |      scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
-        |      ivyScala := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)), // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
-        |
-        |      // Git settings
-        |      git.useGitDescribe := true,
-        |
-        |      // Header settings
-        |      $headerSettings
-        |    )
+        |lazy val library =
+        |  new {
+        |    val scalaCheck = "org.scalacheck" %% "scalacheck" % version.scalaCheck
+        |    val scalaTest  = "org.scalatest"  %% "scalatest"  % version.scalaTest
         |}
+        |
+        |// *****************************************************************************
+        |// Settings
+        |// *****************************************************************************        |
+        |
+        |lazy val settings =
+        |  commonSettings ++
+        |  scalafmtSettings ++
+        |  gitSettings ++
+        |  headerSettings
+        |
+        |lazy val commonSettings =
+        |  Seq(
+        |    scalaVersion := "2.12.1",
+        |    crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
+        |    organization := "$organization",$licenseSettings
+        |    scalacOptions ++= Seq(
+        |      "-unchecked",
+        |      "-deprecation",
+        |      "-language:_",
+        |      "-target:jvm-1.8",
+        |      "-encoding", "UTF-8"
+        |    ),
+        |    javacOptions ++= Seq(
+        |      "-source", "1.8",
+        |      "-target", "1.8"
+        |    ),
+        |    unmanagedSourceDirectories.in(Compile) :=
+        |      Seq(scalaSource.in(Compile).value, javaSource.in(Compile).value),
+        |    unmanagedSourceDirectories.in(Test) :=
+        |      Seq(scalaSource.in(Test).value, javaSource.in(Test).value)
+        |)
+        |
+        |lazy val scalafmtSettings =
+        |  reformatOnCompileSettings ++
+        |  Seq(
+        |    formatSbtFiles := false,
+        |    scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
+        |    ivyScala := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)) // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
+        |  )
+        |
+        |lazy val gitSettings = Seq(
+        |  git.useGitDescribe := true
+        |)
+        |
+        |import de.heikoseeberger.sbtheader.HeaderPattern
+        |import de.heikoseeberger.sbtheader.license.Apache2_0
+        |lazy val headerSettings =
+        |  Seq(
+        |    $headerSettings
+        |  )
         |""".stripMargin
   }
-
-  def dependencies: String =
-    """|import sbt._
-       |
-       |object Version {
-       |  final val Scala     = "2.12.1"
-       |  final val ScalaTest = "3.0.1"
-       |}
-       |
-       |object Library {
-       |  val scalaTest = "org.scalatest" %% "scalatest" % Version.ScalaTest
-       |}
-       |""".stripMargin
 
   def gitignore: String =
     """|# sbt
