@@ -47,14 +47,9 @@ private final class Fresh(buildDir: Path,
     write("project/build.properties", Template.buildProperties)
 
   def writeBuildSbt(): Path =
-    write("build.sbt", Template.buildSbt(organization, name, packageSegments))
-
-  def writeBuildScala(): Path =
-    write("project/Build.scala",
-          Template.buildScala(organization, author, license))
-
-  def writeDependencies(): Path =
-    write("project/Dependencies.scala", Template.dependencies)
+    write(
+      "build.sbt",
+      Template.buildSbt(organization, name, packageSegments, author, license))
 
   def writeGitignore(): Path =
     write(".gitignore", Template.gitignore)

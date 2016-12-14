@@ -129,8 +129,6 @@ object FreshPlugin extends AutoPlugin {
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeBuildProperties()
     fresh.writeBuildSbt()
-    fresh.writeBuildScala()
-    fresh.writeDependencies()
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()
