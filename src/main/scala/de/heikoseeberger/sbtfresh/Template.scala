@@ -111,17 +111,19 @@ private object Template {
         |      "-target", "1.8"
         |    ),
         |    unmanagedSourceDirectories.in(Compile) :=
-        |      Seq(scalaSource.in(Compile).value, javaSource.in(Compile).value),
+        |      Seq(scalaSource.in(Compile).value),
         |    unmanagedSourceDirectories.in(Test) :=
-        |      Seq(scalaSource.in(Test).value, javaSource.in(Test).value)
+        |      Seq(scalaSource.in(Test).value)
         |)
         |
         |lazy val scalafmtSettings =
         |  reformatOnCompileSettings ++
         |  Seq(
         |    formatSbtFiles := false,
-        |    scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
-        |    ivyScala := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)) // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
+        |    scalafmtConfig :=
+        |      Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
+        |    ivyScala :=
+        |      ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)) // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
         |  )
         |
         |lazy val gitSettings =
