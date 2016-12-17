@@ -74,16 +74,14 @@ private object Template {
         |// Library dependencies
         |// *****************************************************************************
         |
-        |lazy val version =
-        |  new {
-        |    val scalaCheck = "1.13.4"
-        |    val scalaTest  = "3.0.1"
-        |  }
-        |
         |lazy val library =
         |  new {
-        |    val scalaCheck = "org.scalacheck" %% "scalacheck" % version.scalaCheck
-        |    val scalaTest  = "org.scalatest"  %% "scalatest"  % version.scalaTest
+        |    object Version {
+        |      val scalaCheck = "1.13.4"
+        |      val scalaTest  = "3.0.1"
+        |    }
+        |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
+        |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
         |}
         |
         |// *****************************************************************************
@@ -126,9 +124,10 @@ private object Template {
         |    ivyScala := ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)) // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
         |  )
         |
-        |lazy val gitSettings = Seq(
-        |  git.useGitDescribe := true
-        |)
+        |lazy val gitSettings =
+        |  Seq(
+        |    git.useGitDescribe := true
+        |  )
         |
         |import de.heikoseeberger.sbtheader.HeaderPattern
         |import de.heikoseeberger.sbtheader.license.Apache2_0
