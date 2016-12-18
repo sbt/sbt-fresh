@@ -1,21 +1,18 @@
 # sbt-fresh #
 
-sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project which
-is already prepared for multiple modules: It creates an sbt build according to
-established best practices, creates a useful package object for the root
-package, initializes a Git repository and creates an initial commit, etc.
+sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project: it
+creates an sbt build according to established best practices, creates a useful
+package object for the root package, initializes a Git repository, creates an
+initial commit, etc.
 
-Notice:
-- The created `project/Build.scala` is not an old-style and deprecated `.scala`
-  build definition, but an auto plugin defining common settings for all modules
-- The build definition created by sbt-fresh is incompatible with the
-  -Yno-adapted-args scalac option.
+Notice: The build definition created by sbt-fresh is incompatible with the
+-Yno-adapted-args scalac option.
 
 Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/0.13/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "1.8.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "2.0.0-RC3")
 ```
 
 You can define the following settings in your global build definition, which
@@ -68,20 +65,18 @@ sbt-fresh creates a project with the following layout:
 ```
 + .gitignore
 + .scalafmt.conf
-+ build.sbt             // specific settings for (single) module
-+ LICENSE               // license file (Apache by default)
++ build.sbt           // build settings
++ LICENSE             // license file (Apache by default)
 + NOTICE
 + project
---+ build.properties    // sbt version
---+ Build.scala         // auto plugin with common settings for all modules
---+ Dependencies.scala  // values for library dependencies
---+ plugins.sbt         // sbt-git, sbt-header, sbt-scalafmt
+--+ build.properties  // sbt version
+--+ plugins.sbt       // sbt-git, sbt-header, sbt-scalafmt
 + README.md
-+ shell-prompt.sbt      // show project id
++ shell-prompt.sbt    // show project id
 + src
 --+ main
 ----+ scala
-------+ package.scala   // type aliases repointing `Seq` and friends to immutable
+------+ package.scala // type aliases repointing `Seq` and friends to immutable
 ```
 
 ## Contribution policy ##
