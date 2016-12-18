@@ -69,6 +69,12 @@ private object Template {
         |    .in(file("."))
         |    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |    .settings(settings)
+        |    .settings(
+        |      libraryDependencies := Seq(
+        |        library.scalaCheck % Test,
+        |        library.scalaTest  % Test
+        |      )
+        |    )
         |
         |// *****************************************************************************
         |// Library dependencies
