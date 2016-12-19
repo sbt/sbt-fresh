@@ -70,7 +70,7 @@ private object Template {
         |    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
         |    .settings(settings)
         |    .settings(
-        |      libraryDependencies := Seq(
+        |      libraryDependencies ++= Seq(
         |        library.scalaCheck % Test,
         |        library.scalaTest  % Test
         |      )
