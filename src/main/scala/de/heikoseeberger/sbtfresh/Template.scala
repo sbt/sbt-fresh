@@ -138,7 +138,7 @@ private object Template {
         |  )
         |
         |import de.heikoseeberger.sbtheader.HeaderPattern
-        |import de.heikoseeberger.sbtheader.license.Apache2_0
+        |import de.heikoseeberger.sbtheader.license._
         |lazy val headerSettings =
         |  Seq(
         |    $headerSettings
