@@ -78,6 +78,9 @@ private final class Fresh(buildDir: Path,
   def writeShellPrompt(): Path =
     write("shell-prompt.sbt", Template.shellPrompt)
 
+  def writeTravisYml(): Path =
+    write(".travis.yml", Template.travisYml)
+
   private def write(path: String, content: String) =
     Files.write(resolve(path), content.getBytes(UTF_8))
 
