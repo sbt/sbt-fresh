@@ -102,8 +102,9 @@ private object Template {
         |
         |lazy val commonSettings =
         |  Seq(
-        |    scalaVersion := "2.12.1",
-        |    crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
+        |    // scalaVersion and crossScalaVersions from .travis.yml via sbt-travisci
+        |    // scalaVersion := "2.12.1",
+        |    // crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
         |    organization := "$organization",$licenseSettings
         |    scalacOptions ++= Seq(
         |      "-unchecked",
@@ -204,7 +205,8 @@ private object Template {
   }
 
   def plugins: String =
-    """|addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.10")
+    """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
+       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.10")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
@@ -253,5 +255,16 @@ private object Template {
        |  val project = Project.extract(state).currentRef.project
        |  s"[$project]> "
        |}
+       |""".stripMargin
+
+  def travisYml: String =
+    """|language: scala
+       |
+       |scala:
+       |  - 2.11.8
+       |  - 2.12.1
+       |
+       |jdk:
+       |  - openjdk8
        |""".stripMargin
 }
