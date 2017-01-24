@@ -12,7 +12,7 @@ Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/0.13/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "2.1.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "2.2.0")
 ```
 
 You can define the following settings in your global build definition, which
@@ -65,18 +65,19 @@ sbt-fresh creates a project with the following layout:
 ```
 + .gitignore
 + .scalafmt.conf
-+ build.sbt           // build settings
-+ LICENSE             // license file (Apache by default)
++ build.sbt                      // build settings
++ LICENSE                        // license file (Apache by default)
 + NOTICE
 + project
---+ build.properties  // sbt version
---+ plugins.sbt       // sbt-git, sbt-header, sbt-scalafmt
+--+ AutomateScalafmtPlugin.scala // settings for scalafmt automation
+--+ build.properties             // sbt version
+--+ plugins.sbt                  // sbt-git, sbt-header, sbt-scalafmt
 + README.md
-+ shell-prompt.sbt    // show project id
++ shell-prompt.sbt               // show project id
 + src
 --+ main
 ----+ scala
-------+ package.scala // type aliases repointing `Seq` and friends to immutable
+------+ package.scala            // type aliases repointing `Seq` and friends to immutable
 ```
 
 ## Contribution policy ##
