@@ -23,6 +23,10 @@ private object Template {
 
   private val year = now().getYear
 
+  def automateScalafmtPlugin: String =
+    """|
+       |""".stripMargin
+
   def buildProperties: String =
     """|sbt.version = 0.13.13
        |""".stripMargin
@@ -96,7 +100,6 @@ private object Template {
         |
         |lazy val settings =
         |  commonSettings ++
-        |  scalafmtSettings ++
         |  gitSettings ++
         |  headerSettings
         |
@@ -122,16 +125,6 @@ private object Template {
         |    unmanagedSourceDirectories.in(Test) :=
         |      Seq(scalaSource.in(Test).value)
         |)
-        |
-        |lazy val scalafmtSettings =
-        |  reformatOnCompileSettings ++
-        |  Seq(
-        |    formatSbtFiles := false,
-        |    scalafmtConfig :=
-        |      Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf"),
-        |    ivyScala :=
-        |      ivyScala.value.map(_.copy(overrideScalaVersion = sbtPlugin.value)) // TODO Remove once this workaround no longer needed (https://github.com/sbt/sbt/issues/2786)!
-        |  )
         |
         |lazy val gitSettings =
         |  Seq(
@@ -206,7 +199,7 @@ private object Template {
 
   def plugins: String =
     """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
-       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.4.10")
+       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.5.3")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin

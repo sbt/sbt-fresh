@@ -43,13 +43,18 @@ private final class Fresh(buildDir: Path,
     git.commit().setMessage("Fresh project, created with sbt-fresh").call()
   }
 
+  def writeAutomateScalafmtPlugin(): Path =
+    write("project/AutomateScalafmtPlugin.scala",
+          Template.automateScalafmtPlugin)
+
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 
   def writeBuildSbt(): Path =
     write(
       "build.sbt",
-      Template.buildSbt(organization, name, packageSegments, author, license))
+      Template.buildSbt(organization, name, packageSegments, author, license)
+    )
 
   def writeGitignore(): Path =
     write(".gitignore", Template.gitignore)

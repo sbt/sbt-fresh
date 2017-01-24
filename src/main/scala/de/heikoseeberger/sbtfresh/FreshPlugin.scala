@@ -20,14 +20,14 @@ import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
 import sbt.{
+  settingKey,
   AutoPlugin,
   Command,
   Keys,
   Project,
   SettingKey,
   State,
-  ThisBuild,
-  settingKey
+  ThisBuild
 }
 
 object FreshPlugin extends AutoPlugin {
@@ -127,6 +127,7 @@ object FreshPlugin extends AutoPlugin {
     val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
+    fresh.writeAutomateScalafmtPlugin()
     fresh.writeBuildProperties()
     fresh.writeBuildSbt()
     fresh.writeGitignore()

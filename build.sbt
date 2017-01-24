@@ -23,10 +23,6 @@ libraryDependencies += "org.eclipse.jgit" % "org.eclipse.jgit" % "4.5.0.20160921
 
 git.useGitDescribe := true
 
-reformatOnCompileSettings
-formatSbtFiles := false
-scalafmtConfig := Some(baseDirectory.in(ThisBuild).value / ".scalafmt.conf")
-
 import de.heikoseeberger.sbtheader.license._
 headers := Map("scala" -> Apache2_0("2016", "Heiko Seeberger"))
 
