@@ -120,7 +120,7 @@ private object Template {
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
         |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
-        |}
+        |  }
         |
         |// *****************************************************************************
         |// Settings
