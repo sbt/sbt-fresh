@@ -24,9 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def automateScalafmtPlugin: String =
-    """|package de.heikoseeberger.automatescalafmt
-       |
-       |import org.scalafmt.bootstrap.ScalafmtBootstrap
+    """|import org.scalafmt.bootstrap.ScalafmtBootstrap
        |import org.scalafmt.sbt.ScalafmtPlugin
        |import sbt._
        |import sbt.Keys._
@@ -227,7 +225,7 @@ private object Template {
 
   def plugins: String =
     """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
-       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.5.3")
+       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.5.4")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.6.0")
        |""".stripMargin
