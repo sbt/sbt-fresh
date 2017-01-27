@@ -264,6 +264,8 @@ private object Template {
        |
        |danglingParentheses        = true
        |indentOperator             = spray
+       |maxColumn                  = 100
+       |project.excludeFilters     = [".*\.sbt"]
        |rewrite.rules              = [RedundantBraces, RedundantParens, SortImports]
        |spaces.inImportCurlyBraces = true
        |unindentTopLevelOperators  = true
