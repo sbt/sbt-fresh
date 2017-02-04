@@ -71,7 +71,7 @@ private object Template {
        |              def formattingHandler(files: Set[File]) =
        |                if (files.nonEmpty) {
        |                  val filesArg = files.map(_.getAbsolutePath).mkString(",")
-       |                  ScalafmtBootstrap.main(List("--non-interactive", "-i", "-f", filesArg))
+       |                  ScalafmtBootstrap.main(List("--quiet", "-i", "-f", filesArg))
        |                }
        |              format(formattingHandler, "Formatting")
        |              format(_ => (), "Reformatted") // Recalculate the cache
