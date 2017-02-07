@@ -325,6 +325,6 @@ private object Template {
        |  - 2.12.1
        |
        |jdk:
-       |  - openjdk8
+       |  - oraclejdk8
        |""".stripMargin
 }
