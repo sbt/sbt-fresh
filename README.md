@@ -44,11 +44,12 @@ arguments (hit tab for auto completion) which override the respective settings:
 - `author`
 - `license`
 - `setUpGit`
+- `setUpTravis`
 
 Example:
 
 ```
-sbt> fresh license=bsd3 setUpGit=false
+sbt> fresh license=bsd3 setUpGit=false setUpTravis=false
 ```
 
 The following values are available for the license argument:
