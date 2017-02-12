@@ -56,6 +56,7 @@ The following values are available for the license argument:
 - `bsd2`
 - `bsd3`
 - `gpl3`
+- `lgpl3`
 - `mit`
 
 ## Layout
