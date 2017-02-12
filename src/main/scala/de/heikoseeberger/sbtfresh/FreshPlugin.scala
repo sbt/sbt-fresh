@@ -56,6 +56,11 @@ object FreshPlugin extends AutoPlugin {
         "Initialize a Git repo and create an initial commit – `true` by default"
       )
 
+    val freshSetUpTravis: SettingKey[Boolean] =
+      settingKey(
+        "Configure Travis for Continuous Integration"
+      )
+
     private def licenseIds =
       License.values.toVector.sortBy(_.id).mkString(", ")
   }
@@ -66,13 +71,15 @@ object FreshPlugin extends AutoPlugin {
     final val Author       = "author"
     final val License      = "license"
     final val SetUpGit     = "setUpGit"
+    final val SetUpTravis  = "setUpTravis"
   }
 
   private final case class Args(organization: Option[String],
                                 name: Option[String],
                                 author: Option[String],
                                 license: Option[License],
-                                setUpGit: Option[Boolean])
+                                setUpGit: Option[Boolean],
+                                setUpTravis: Option[Boolean])
 
   private final val DefaultOrganization = "default"
   private final val DefaultAuthor       = "default"
@@ -92,7 +99,8 @@ object FreshPlugin extends AutoPlugin {
       freshName := Keys.baseDirectory.value.getName,
       freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
       freshLicense := DefaultLicense,
-      freshSetUpGit := true
+      freshSetUpGit := true,
+      freshSetUpTravis := true
     )
   }
 
@@ -110,8 +118,9 @@ object FreshPlugin extends AutoPlugin {
       arg(Arg.Name, NotQuoted).? ~
       arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
       arg(Arg.License, licenseParser).? ~
-      arg(Arg.SetUpGit, Bool).?
-    args.map { case o ~ n ~ a ~ l ~ g => Args(o, n, a, l, g) }
+      arg(Arg.SetUpGit, Bool).? ~
+      arg(Arg.SetUpTravis, Bool).?
+    args.map { case o ~ n ~ a ~ l ~ g ~ t => Args(o, n, a, l, g, t) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -125,6 +134,7 @@ object FreshPlugin extends AutoPlugin {
     val author       = args.author.getOrElse(setting(freshAuthor))
     val license      = args.license.orElse(setting(freshLicense))
     val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
+    val setUpTravis  = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeAutomateScalafmtPlugin()
@@ -138,7 +148,7 @@ object FreshPlugin extends AutoPlugin {
     fresh.writeReadme()
     fresh.writeScalafmt()
     fresh.writeShellPrompt()
-    fresh.writeTravisYml()
+    if (setUpTravis) fresh.writeTravisYml()
     if (setUpGit) fresh.initialCommit()
 
     state.reboot(true)
