@@ -50,9 +50,15 @@ object License {
             "http://www.gnu.org/licenses/gpl-3.0.en.html",
             "GPLv3")
 
+  final val lgpl3: License =
+    License("lgpl3",
+            "LGPLv3",
+            "https://www.gnu.org/licenses/lgpl-3.0.en.html",
+            "LGPLv3")
+
   final val mit: License =
     License("mit", "MIT", "https://opensource.org/licenses/MIT", "MIT")
 
   def values: Set[License] =
-    Set(apache20, bsd2, bsd3, gpl3, mit)
+    Set(apache20, bsd2, bsd3, gpl3, lgpl3, mit)
 }
