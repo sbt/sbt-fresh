@@ -54,6 +54,7 @@ sbt> fresh license=bsd3 setUpGit=false setUpTravis=false
 
 The following values are available for the license argument:
 - `apache20`
+- `agpl3`
 - `bsd2`
 - `bsd3`
 - `gpl3`

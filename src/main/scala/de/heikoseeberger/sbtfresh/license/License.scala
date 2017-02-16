@@ -32,6 +32,12 @@ object License {
             "http://www.apache.org/licenses/LICENSE-2.0",
             "Apache2_0")
 
+  final val agpl3: License =
+    License("agpl3",
+            "AGPLv3",
+            "https://www.gnu.org/licenses/agpl.html",
+            "AGPLv3")
+
   final val bsd2: License =
     License("bsd2",
             "BSD 2-Clause",
@@ -60,5 +66,5 @@ object License {
     License("mit", "MIT", "https://opensource.org/licenses/MIT", "MIT")
 
   def values: Set[License] =
-    Set(apache20, bsd2, bsd3, gpl3, lgpl3, mit)
+    Set(apache20, agpl3, bsd2, bsd3, gpl3, lgpl3, mit)
 }
