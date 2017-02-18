@@ -80,8 +80,11 @@ private final class Fresh(buildDir: Path,
   def writeScalafmt(): Path =
     write(".scalafmt.conf", Template.scalafmtConf)
 
-  def writeShellPrompt(): Path =
-    write("shell-prompt.sbt", Template.shellPrompt)
+  def writeShellPrompt(useGitPrompt: Boolean): Path =
+    if (useGitPrompt)
+      write("shell-prompt.sbt", Template.shellPromptWithGit)
+    else
+      write("shell-prompt.sbt", Template.shellPrompt)
 
   def writeTravisYml(): Path =
     write(".travis.yml", Template.travisYml)
