@@ -9,6 +9,5 @@ $ exists project/AutomateScalafmtPlugin.scala
 $ exists project/build.properties
 $ exists project/plugins.sbt
 $ exists README.md
-$ exists shell-prompt.sbt
 $ exists src/main/scala/org/acme/package.scala
 > checkInitialCommit

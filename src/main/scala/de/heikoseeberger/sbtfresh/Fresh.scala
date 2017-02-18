@@ -50,10 +50,15 @@ private final class Fresh(buildDir: Path,
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(): Path =
+  def writeBuildSbt(useGitPrompt: Boolean): Path =
     write(
       "build.sbt",
-      Template.buildSbt(organization, name, packageSegments, author, license)
+      Template.buildSbt(organization,
+                        name,
+                        packageSegments,
+                        author,
+                        license,
+                        useGitPrompt)
     )
 
   def writeGitignore(): Path =
@@ -79,9 +84,6 @@ private final class Fresh(buildDir: Path,
 
   def writeScalafmt(): Path =
     write(".scalafmt.conf", Template.scalafmtConf)
-
-  def writeShellPrompt(): Path =
-    write("shell-prompt.sbt", Template.shellPrompt)
 
   def writeTravisYml(): Path =
     write(".travis.yml", Template.travisYml)
