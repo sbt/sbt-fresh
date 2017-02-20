@@ -147,7 +147,7 @@ object FreshPlugin extends AutoPlugin {
     fresh.writePlugins()
     fresh.writeReadme()
     fresh.writeScalafmt()
-    fresh.writeShellPrompt()
+    fresh.writeShellPrompt(setUpGit)
     if (setUpTravis) fresh.writeTravisYml()
     if (setUpGit) fresh.initialCommit()
 
