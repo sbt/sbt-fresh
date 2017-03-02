@@ -313,6 +313,12 @@ private object Template {
        |}
        |""".stripMargin
 
+  def shellPromptWithGit: String =
+    """|import com.typesafe.sbt.SbtGit.GitCommand
+       |
+       |shellPrompt.in(ThisBuild) := GitCommand.prompt
+       |""".stripMargin
+
   def travisYml: String =
     """|language: scala
        |
