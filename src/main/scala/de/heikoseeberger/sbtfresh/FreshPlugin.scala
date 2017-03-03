@@ -61,6 +61,11 @@ object FreshPlugin extends AutoPlugin {
         "Configure Travis for Continuous Integration"
       )
 
+    val freshUseGitPrompt: SettingKey[Boolean] =
+      settingKey(
+        "Configure the sbt prompt to use the one provided by sbt-git - `false` by default"
+      )
+
     private def licenseIds =
       License.values.toVector.sortBy(_.id).mkString(", ")
   }
@@ -72,6 +77,7 @@ object FreshPlugin extends AutoPlugin {
     final val License      = "license"
     final val SetUpGit     = "setUpGit"
     final val SetUpTravis  = "setUpTravis"
+    final val UseGitPrompt = "useGitPrompt"
   }
 
   private final case class Args(organization: Option[String],
@@ -79,7 +85,8 @@ object FreshPlugin extends AutoPlugin {
                                 author: Option[String],
                                 license: Option[License],
                                 setUpGit: Option[Boolean],
-                                setUpTravis: Option[Boolean])
+                                setUpTravis: Option[Boolean],
+                                useGitPrompt: Option[Boolean])
 
   private final val DefaultOrganization = "default"
   private final val DefaultAuthor       = "default"
@@ -100,7 +107,8 @@ object FreshPlugin extends AutoPlugin {
       freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
       freshLicense := DefaultLicense,
       freshSetUpGit := true,
-      freshSetUpTravis := true
+      freshSetUpTravis := true,
+      freshUseGitPrompt := false
     )
   }
 
@@ -119,8 +127,9 @@ object FreshPlugin extends AutoPlugin {
       arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
       arg(Arg.License, licenseParser).? ~
       arg(Arg.SetUpGit, Bool).? ~
-      arg(Arg.SetUpTravis, Bool).?
-    args.map { case o ~ n ~ a ~ l ~ g ~ t => Args(o, n, a, l, g, t) }
+      arg(Arg.SetUpTravis, Bool).? ~
+      arg(Arg.UseGitPrompt, Bool).?
+    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ gp => Args(o, n, a, l, g, t, gp) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -135,11 +144,12 @@ object FreshPlugin extends AutoPlugin {
     val license      = args.license.orElse(setting(freshLicense))
     val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
     val setUpTravis  = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
+    val useGitPrompt = args.useGitPrompt.getOrElse(setting(freshUseGitPrompt))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeAutomateScalafmtPlugin()
     fresh.writeBuildProperties()
-    fresh.writeBuildSbt()
+    fresh.writeBuildSbt(useGitPrompt)
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()
@@ -147,7 +157,6 @@ object FreshPlugin extends AutoPlugin {
     fresh.writePlugins()
     fresh.writeReadme()
     fresh.writeScalafmt()
-    fresh.writeShellPrompt()
     if (setUpTravis) fresh.writeTravisYml()
     if (setUpGit) fresh.initialCommit()
 

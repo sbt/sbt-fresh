@@ -100,7 +100,8 @@ private object Template {
                name: String,
                packageSegments: Vector[String],
                author: String,
-               license: Option[License]): String = {
+               license: Option[License],
+               useGitPrompt: Boolean): String = {
     val nameIdentifier =
       if (name.segments.mkString == name) name else s"`$name`"
 
@@ -128,6 +129,18 @@ private object Template {
       license.fold(fallback)(settings)
     }
 
+    val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
+    val promptSettings =
+      if (useGitPrompt)
+        ""
+      else
+        """|,
+           |    shellPrompt in ThisBuild := { state =>
+           |      val project = Project.extract(state).currentRef.project
+           |      s"[$project]> "
+           |    }
+        """.stripMargin
+
     s"""|// *****************************************************************************
         |// Projects
         |// *****************************************************************************
@@ -135,7 +148,7 @@ private object Template {
         |lazy val $nameIdentifier =
         |  project
         |    .in(file("."))
-        |    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+        |    .enablePlugins(AutomateHeaderPlugin, GitVersioning$gitPromptPlugin)
         |    .settings(settings)
         |    .settings(
         |      libraryDependencies ++= Seq(
@@ -185,7 +198,7 @@ private object Template {
         |      "-target", "1.8"
         |    ),
         |    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
-        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)
+        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$promptSettings
         |)
         |
         |lazy val gitSettings =
@@ -263,7 +276,7 @@ private object Template {
     """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
        |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.5.6")
        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
-       |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.7.0")
+       |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.8.0")
        |""".stripMargin
 
   def readme(name: String, license: Option[License]): String = {
@@ -304,13 +317,6 @@ private object Template {
        |rewrite.rules              = [RedundantBraces, RedundantParens, SortImports]
        |spaces.inImportCurlyBraces = true
        |unindentTopLevelOperators  = true
-       |""".stripMargin
-
-  def shellPrompt: String =
-    """|shellPrompt.in(ThisBuild) := { state =>
-       |  val project = Project.extract(state).currentRef.project
-       |  s"[$project]> "
-       |}
        |""".stripMargin
 
   def travisYml: String =
