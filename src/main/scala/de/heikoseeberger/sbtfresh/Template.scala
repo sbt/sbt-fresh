@@ -102,8 +102,7 @@ private object Template {
                author: String,
                license: Option[License],
                useGitPrompt: Boolean): String = {
-    val nameIdentifier =
-      if (name.segments.mkString == name) name else s"`$name`"
+    val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
 
     val licenseSettings = {
       def settings(license: License) = {
@@ -130,6 +129,7 @@ private object Template {
     }
 
     val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
+
     val promptSettings =
       if (useGitPrompt)
         ""
@@ -138,8 +138,7 @@ private object Template {
            |    shellPrompt in ThisBuild := { state =>
            |      val project = Project.extract(state).currentRef.project
            |      s"[$project]> "
-           |    }
-        """.stripMargin
+           |    }""".stripMargin
 
     s"""|// *****************************************************************************
         |// Projects
