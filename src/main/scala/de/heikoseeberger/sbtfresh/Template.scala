@@ -102,7 +102,8 @@ private object Template {
                author: String,
                license: Option[License],
                useGitPrompt: Boolean): String = {
-    val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
+    val nameIdentifier =
+      if (name.segments.mkString == name) name else s"`$name`"
 
     val licenseSettings = {
       def settings(license: License) = {
