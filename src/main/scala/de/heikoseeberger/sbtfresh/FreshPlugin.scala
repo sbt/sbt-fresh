@@ -58,7 +58,7 @@ object FreshPlugin extends AutoPlugin {
 
     val freshSetUpTravis: SettingKey[Boolean] =
       settingKey(
-        "Configure Travis for Continuous Integration"
+        "Configure Travis for Continuous Integration - `true` by default"
       )
 
     val freshUseGitPrompt: SettingKey[Boolean] =
