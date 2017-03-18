@@ -101,7 +101,8 @@ private object Template {
                packageSegments: Vector[String],
                author: String,
                license: Option[License],
-               useGitPrompt: Boolean): String = {
+               useGitPrompt: Boolean,
+               setUpTravis: Boolean): String = {
     val nameIdentifier =
       if (name.segments.mkString == name) name else s"`$name`"
 
@@ -140,6 +141,12 @@ private object Template {
            |      val project = Project.extract(state).currentRef.project
            |      s"[$project]> "
            |    }""".stripMargin
+
+    val scalaVersion =
+      if (setUpTravis)
+        """|// scalaVersion from .travis.yml via sbt-travisci
+           |    // scalaVersion := "2.12.1",""".stripMargin
+      else """scalaVersion := "2.12.1","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -182,9 +189,7 @@ private object Template {
         |
         |lazy val commonSettings =
         |  Seq(
-        |    // scalaVersion and crossScalaVersions from .travis.yml via sbt-travisci
-        |    // scalaVersion := "2.12.1",
-        |    // crossScalaVersions := Seq(scalaVersion.value, "2.11.8"),
+        |    $scalaVersion
         |    organization := "$organization",$licenseSettings
         |    scalacOptions ++= Seq(
         |      "-unchecked",
@@ -272,12 +277,18 @@ private object Template {
         |""".stripMargin
   }
 
-  def plugins: String =
-    """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
-       |addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.3")
-       |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
-       |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.8.0")
-       |""".stripMargin
+  def plugins(setUpTravis: Boolean): String = {
+    val travisPlugin =
+      if (setUpTravis)
+        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.0.0")
+           |""".stripMargin
+      else ""
+
+    s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.3")
+        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.8.0")
+        |""".stripMargin
+  }
 
   def readme(name: String, license: Option[License]): String = {
     val licenseText = {
@@ -323,7 +334,6 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.11.8
        |  - 2.12.1
        |
        |jdk:

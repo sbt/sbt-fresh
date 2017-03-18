@@ -50,7 +50,7 @@ private final class Fresh(buildDir: Path,
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(useGitPrompt: Boolean): Path =
+  def writeBuildSbt(useGitPrompt: Boolean, setUpTravis: Boolean): Path =
     write(
       "build.sbt",
       Template.buildSbt(organization,
@@ -58,7 +58,8 @@ private final class Fresh(buildDir: Path,
                         packageSegments,
                         author,
                         license,
-                        useGitPrompt)
+                        useGitPrompt,
+                        setUpTravis)
     )
 
   def writeGitignore(): Path =
@@ -76,8 +77,8 @@ private final class Fresh(buildDir: Path,
     write(path, Template.`package`(packageSegments, author))
   }
 
-  def writePlugins(): Path =
-    write("project/plugins.sbt", Template.plugins)
+  def writePlugins(setUpTravis: Boolean): Path =
+    write("project/plugins.sbt", Template.plugins(setUpTravis))
 
   def writeReadme(): Path =
     write("README.md", Template.readme(name, license))
