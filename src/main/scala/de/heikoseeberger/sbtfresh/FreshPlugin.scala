@@ -19,16 +19,7 @@ package de.heikoseeberger.sbtfresh
 import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
-import sbt.{
-  settingKey,
-  AutoPlugin,
-  Command,
-  Keys,
-  Project,
-  SettingKey,
-  State,
-  ThisBuild
-}
+import sbt.{ settingKey, AutoPlugin, Command, Keys, Project, SettingKey, State, ThisBuild }
 
 object FreshPlugin extends AutoPlugin {
 
@@ -45,29 +36,21 @@ object FreshPlugin extends AutoPlugin {
         s"""Author – value of "user.name" system property or "$DefaultAuthor" by default"""
       )
 
-    val freshLicense: SettingKey[Option[License]] = {
-      settingKey(
-        s"""Optional license (one of $licenseIds) – `$DefaultLicense` by default"""
-      )
-    }
+    val freshLicense: SettingKey[Option[License]] =
+      settingKey(s"""Optional license (one of $licenseIds) – `$DefaultLicense` by default""")
 
     val freshSetUpGit: SettingKey[Boolean] =
-      settingKey(
-        "Initialize a Git repo and create an initial commit – `true` by default"
-      )
+      settingKey("Initialize a Git repo and create an initial commit – `true` by default")
 
     val freshSetUpTravis: SettingKey[Boolean] =
-      settingKey(
-        "Configure Travis for Continuous Integration - `true` by default"
-      )
+      settingKey("Configure Travis for Continuous Integration - `true` by default")
 
     val freshUseGitPrompt: SettingKey[Boolean] =
       settingKey(
         "Configure the sbt prompt to use the one provided by sbt-git - `false` by default"
       )
 
-    private def licenseIds =
-      License.values.toVector.sortBy(_.id).mkString(", ")
+    private def licenseIds = License.values.toVector.sortBy(_.id).mkString(", ")
   }
 
   private final object Arg {
@@ -114,21 +97,20 @@ object FreshPlugin extends AutoPlugin {
 
   private def parser(state: State) = {
     import DefaultParsers._
-    def arg[A](name: String, parser: Parser[A]) =
-      Space ~> name.decapitalize ~> "=" ~> parser
+    def arg[A](name: String, parser: Parser[A]) = Space ~> name.decapitalize ~> "=" ~> parser
     val licenseParser =
       License.values.toVector
         .sortBy(_.id)
         .map(l => (l.id: Parser[String]).map(_ => l))
         .reduceLeft(_ | _)
     val args =
-      arg(Arg.Organization, NotQuoted).? ~
-      arg(Arg.Name, NotQuoted).? ~
-      arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
-      arg(Arg.License, licenseParser).? ~
-      arg(Arg.SetUpGit, Bool).? ~
-      arg(Arg.SetUpTravis, Bool).? ~
-      arg(Arg.UseGitPrompt, Bool).?
+    arg(Arg.Organization, NotQuoted).? ~
+    arg(Arg.Name, NotQuoted).? ~
+    arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
+    arg(Arg.License, licenseParser).? ~
+    arg(Arg.SetUpGit, Bool).? ~
+    arg(Arg.SetUpTravis, Bool).? ~
+    arg(Arg.UseGitPrompt, Bool).?
     args.map { case o ~ n ~ a ~ l ~ g ~ t ~ gp => Args(o, n, a, l, g, t, gp) }
   }
 
