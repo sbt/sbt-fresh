@@ -44,8 +44,7 @@ private final class Fresh(buildDir: Path,
   }
 
   def writeAutomateScalafmtPlugin(): Path =
-    write("project/AutomateScalafmtPlugin.scala",
-          Template.automateScalafmtPlugin)
+    write("project/AutomateScalafmtPlugin.scala", Template.automateScalafmtPlugin)
 
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
@@ -72,8 +71,7 @@ private final class Fresh(buildDir: Path,
     write("NOTICE", Template.notice(author))
 
   def writePackage(): Path = {
-    val path =
-      packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala"
+    val path = packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala"
     write(path, Template.`package`(packageSegments, author))
   }
 
@@ -93,14 +91,11 @@ private final class Fresh(buildDir: Path,
     Files.write(resolve(path), content.getBytes(UTF_8))
 
   private def copy(path: String, name: String) =
-    Files.copy(getClass.getResourceAsStream(s"/$name"),
-               resolve(path),
-               REPLACE_EXISTING)
+    Files.copy(getClass.getResourceAsStream(s"/$name"), resolve(path), REPLACE_EXISTING)
 
   private def resolve(path: String) = {
     val resolved = buildDir.resolve(path)
-    if (resolved.getParent != null)
-      Files.createDirectories(resolved.getParent)
+    if (resolved.getParent != null) Files.createDirectories(resolved.getParent)
     resolved
   }
 }

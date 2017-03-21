@@ -17,50 +17,29 @@
 package de.heikoseeberger.sbtfresh
 package license
 
-final case class License(id: String,
-                         name: String,
-                         url: String,
-                         headerName: String)
+final case class License(id: String, name: String, url: String, headerName: String)
 
 object License {
 
   // Attention: headerName must match objects implementing `License` in sbt-header!
 
   final val apache20: License =
-    License("apache20",
-            "Apache 2.0",
-            "http://www.apache.org/licenses/LICENSE-2.0",
-            "Apache2_0")
+    License("apache20", "Apache 2.0", "http://www.apache.org/licenses/LICENSE-2.0", "Apache2_0")
 
   final val agpl3: License =
-    License("agpl3",
-            "AGPLv3",
-            "https://www.gnu.org/licenses/agpl.html",
-            "AGPLv3")
+    License("agpl3", "AGPLv3", "https://www.gnu.org/licenses/agpl.html", "AGPLv3")
 
   final val bsd2: License =
-    License("bsd2",
-            "BSD 2-Clause",
-            "https://opensource.org/licenses/BSD-2-Clause",
-            "BSD2Clause")
+    License("bsd2", "BSD 2-Clause", "https://opensource.org/licenses/BSD-2-Clause", "BSD2Clause")
 
   final val bsd3: License =
-    License("bsd3",
-            "BSD 3-Clause",
-            "https://opensource.org/licenses/BSD-3-Clause",
-            "BSD2Clause")
+    License("bsd3", "BSD 3-Clause", "https://opensource.org/licenses/BSD-3-Clause", "BSD2Clause")
 
   final val gpl3: License =
-    License("gpl3",
-            "GPLv3",
-            "http://www.gnu.org/licenses/gpl-3.0.en.html",
-            "GPLv3")
+    License("gpl3", "GPLv3", "http://www.gnu.org/licenses/gpl-3.0.en.html", "GPLv3")
 
   final val lgpl3: License =
-    License("lgpl3",
-            "LGPLv3",
-            "https://www.gnu.org/licenses/lgpl-3.0.en.html",
-            "LGPLv3")
+    License("lgpl3", "LGPLv3", "https://www.gnu.org/licenses/lgpl-3.0.en.html", "LGPLv3")
 
   final val mit: License =
     License("mit", "MIT", "https://opensource.org/licenses/MIT", "MIT")

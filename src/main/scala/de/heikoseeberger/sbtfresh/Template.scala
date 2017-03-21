@@ -249,7 +249,8 @@ private object Template {
        |# Mac
        |.DS_Store
        |
-       |# Akka Persistence
+       |# Akka
+       |ddata*
        |journal
        |snapshots
        |
@@ -284,7 +285,7 @@ private object Template {
            |""".stripMargin
       else ""
 
-    s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.5")
+    s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.6")
         |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.8.5")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.8.0")
         |""".stripMargin
