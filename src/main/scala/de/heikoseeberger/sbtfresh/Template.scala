@@ -198,10 +198,6 @@ private object Template {
         |      "-target:jvm-1.8",
         |      "-encoding", "UTF-8"
         |    ),
-        |    javacOptions ++= Seq(
-        |      "-source", "1.8",
-        |      "-target", "1.8"
-        |    ),
         |    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
         |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$promptSettings
         |)
