@@ -171,7 +171,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck = "1.13.4"
+        |      val scalaCheck = "1.13.5"
         |      val scalaTest  = "3.0.1"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
