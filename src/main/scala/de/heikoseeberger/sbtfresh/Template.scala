@@ -93,7 +93,7 @@ private object Template {
        |""".stripMargin
 
   def buildProperties: String =
-    """|sbt.version = 0.13.13
+    """|sbt.version = 0.13.15
        |""".stripMargin
 
   def buildSbt(organization: String,
