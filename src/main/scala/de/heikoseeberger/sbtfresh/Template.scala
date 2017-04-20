@@ -145,8 +145,8 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.12.1",""".stripMargin
-      else """scalaVersion := "2.12.1","""
+           |    // scalaVersion := "2.12.2",""".stripMargin
+      else """scalaVersion := "2.12.2","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -172,7 +172,7 @@ private object Template {
         |  new {
         |    object Version {
         |      val scalaCheck = "1.13.5"
-        |      val scalaTest  = "3.0.1"
+        |      val scalaTest  = "3.0.3"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
         |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
@@ -333,7 +333,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.12.1
+       |  - 2.12.2
        |
        |jdk:
        |  - oraclejdk8
