@@ -108,26 +108,11 @@ private object Template {
 
     val licenseSettings = {
       def settings(license: License) = {
-        val License(_, name, url, _) = license
+        val License(_, name, url) = license
         s"""|
-            |    licenses += ("$name",
-            |                 url("$url")),
-            |    mappings.in(Compile, packageBin) += baseDirectory.in(ThisBuild).value / "LICENSE" -> "LICENSE",""".stripMargin
+            |    licenses += ("$name", url("$url")),""".stripMargin
       }
       license.map(settings).getOrElse("")
-    }
-
-    val headerSettings = {
-      def settings(license: License) =
-        s"""headers := Map("scala" -> ${license.headerName}("$year", "$author"))"""
-      def fallback =
-        s"""|headers := Map(
-            |      "scala" -> (HeaderPattern.cStyleBlockComment,
-            |                  $TQ|/*
-            ||                     | * Copyright year author
-            ||                     | */$TQ.stripMargin)
-            |    )""".stripMargin
-      license.fold(fallback)(settings)
     }
 
     val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
@@ -184,13 +169,14 @@ private object Template {
         |
         |lazy val settings =
         |  commonSettings ++
-        |  gitSettings ++
-        |  headerSettings
+        |  gitSettings
         |
         |lazy val commonSettings =
         |  Seq(
         |    $scalaVersion
-        |    organization := "$organization",$licenseSettings
+        |    organization := "$organization",
+        |    organizationName := "$author",
+        |    startYear := Some($year),$licenseSettings
         |    scalacOptions ++= Seq(
         |      "-unchecked",
         |      "-deprecation",
@@ -205,13 +191,6 @@ private object Template {
         |lazy val gitSettings =
         |  Seq(
         |    git.useGitDescribe := true
-        |  )
-        |
-        |import de.heikoseeberger.sbtheader.HeaderPattern
-        |import de.heikoseeberger.sbtheader.license._
-        |lazy val headerSettings =
-        |  Seq(
-        |    $headerSettings
         |  )
         |""".stripMargin
   }
@@ -283,7 +262,7 @@ private object Template {
 
     s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.6")
         |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.2")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "1.8.0")
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "2.0.0")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
         |""".stripMargin
@@ -292,7 +271,7 @@ private object Template {
   def readme(name: String, license: Option[License]): String = {
     val licenseText = {
       def text(license: License) = {
-        val License(_, name, url, _) = license
+        val License(_, name, url) = license
         s"""|## License ##
             |
             |This code is open source software licensed under the
