@@ -1,33 +1,73 @@
-val `sbt-fresh` =
+// *****************************************************************************
+// Projects
+// *****************************************************************************
+
+lazy val `sbt-fresh` =
   project
-  .in(file("."))
-  .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+    .in(file("."))
+    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+    .settings(settings)
+    .settings(
+      addSbtPlugin(library.sbtGit)
+    )
 
-scalacOptions ++= Vector(
-  "-unchecked",
-  "-deprecation",
-  "-language:_",
-  "-target:jvm-1.6",
-  "-encoding", "UTF-8"
+// *****************************************************************************
+// Library dependencies
+// *****************************************************************************
+
+lazy val library =
+  new {
+    object Version {
+      val sbtGit = "0.9.3"
+    }
+    val sbtGit = "com.typesafe.sbt" % "sbt-git" % Version.sbtGit
+  }
+
+
+// *****************************************************************************
+// Settings
+// *****************************************************************************
+
+lazy val settings =
+  commonSettings ++
+  gitSettings ++
+  sbtScriptedSettings
+
+lazy val commonSettings =
+  Seq(
+    // scalaVersion from .travis.yml via sbt-travisci
+    // scalaVersion := "2.12.1
+    organization := "de.heikoseeberger",
+    organizationName := "Heiko Seeberger",
+    startYear := Some(2016),
+    licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")),
+    scalacOptions ++= Seq(
+      "-unchecked",
+      "-deprecation",
+      "-language:_",
+      "-target:jvm-1.6",
+      "-encoding", "UTF-8"
+    ),
+    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
+    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value),
+    shellPrompt in ThisBuild := { state =>
+      val project = Project.extract(state).currentRef.project
+      s"[$project]> "
+    },
+    sbtPlugin := true,
+    publishMavenStyle := false
 )
-unmanagedSourceDirectories.in(Compile) := Vector(scalaSource.in(Compile).value)
-unmanagedSourceDirectories.in(Test)    := Vector(scalaSource.in(Test).value)
 
-organization := "de.heikoseeberger"
-licenses     += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0"))
+lazy val gitSettings =
+  Seq(
+    git.useGitDescribe := true
+  )
 
-sbtPlugin         := true
-publishMavenStyle := false
-
-libraryDependencies += "org.eclipse.jgit" % "org.eclipse.jgit" % "4.5.0.201609210915-r"
-
-git.useGitDescribe := true
-
-import de.heikoseeberger.sbtheader.license._
-headers := Map("scala" -> Apache2_0("2016", "Heiko Seeberger"))
-
-scriptedSettings
-scriptedLaunchOpts ++= Vector(
-  "-Xmx1024M",
-  s"-Dplugin.version=${version.value}"
-)
+lazy val sbtScriptedSettings =
+  scriptedSettings ++
+  Seq(
+    scriptedLaunchOpts ++= Vector(
+      "-Xmx1024M",
+      s"-Dplugin.version=${version.value}"
+    )
+  )

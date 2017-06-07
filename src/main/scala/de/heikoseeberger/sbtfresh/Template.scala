@@ -261,7 +261,7 @@ private object Template {
       else ""
 
     s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.6")
-        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.2")
+        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.3")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "2.0.0")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
