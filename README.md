@@ -22,12 +22,13 @@ most probably sits at `~/.sbt/0.13/build.sbt`:
 import de.heikoseeberger.sbtfresh.FreshPlugin.autoImport._
 import de.heikoseeberger.sbtfresh.license.License
 
-freshOrganization := "doe.john"        // Organization – "default" by default
-freshAuthor       := "John Doe"        // Author – value of "user.name" system property or "default" by default
-freshLicense      := Some(License.mit) // Optional license – `apache20` by default
-freshSetUpGit     := true              // Initialize a Git repo and create an initial commit – `true` by default
-freshSetUpTravis  := true              // Configure Travis for Continuous Integration - `true` by default
-freshUseGitPrompt := true              // Use the prompt from the sbt-git plugin - `false` by default
+freshOrganization     := "doe.john"        // Organization – "default" by default
+freshAuthor           := "John Doe"        // Author – value of "user.name" system property or "default" by default
+freshLicense          := Some(License.mit) // Optional license – `apache20` by default
+freshSetUpGit         := true              // Initialize a Git repo and create an initial commit – `true` by default
+freshSetUpTravis      := true              // Configure Travis for Continuous Integration - `true` by default
+freshSetUpWartremover := true              // Include the sbt wartremover (http://www.wartremover.org) plugin - `false` by default
+freshUseGitPrompt     := true              // Use the prompt from the sbt-git plugin - `false` by default
 ```
 
 Other settings which probably shouldn't be set globally:
@@ -47,6 +48,7 @@ arguments (hit tab for auto completion) which override the respective settings:
 - `license`
 - `setUpGit`
 - `setUpTravis`
+- `setUpWartremover`
 - `useGitPrompt`
 
 Example:

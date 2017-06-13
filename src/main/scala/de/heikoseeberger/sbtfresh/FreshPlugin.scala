@@ -45,6 +45,9 @@ object FreshPlugin extends AutoPlugin {
     val freshSetUpTravis: SettingKey[Boolean] =
       settingKey("Configure Travis for Continuous Integration - `true` by default")
 
+    val freshSetUpWartremover: SettingKey[Boolean] =
+      settingKey("Include the sbt wartremover plugin - `false` by default")
+
     val freshUseGitPrompt: SettingKey[Boolean] =
       settingKey(
         "Configure the sbt prompt to use the one provided by sbt-git - `false` by default"
@@ -54,13 +57,14 @@ object FreshPlugin extends AutoPlugin {
   }
 
   private final object Arg {
-    final val Organization = "organization"
-    final val Name         = "name"
-    final val Author       = "author"
-    final val License      = "license"
-    final val SetUpGit     = "setUpGit"
-    final val SetUpTravis  = "setUpTravis"
-    final val UseGitPrompt = "useGitPrompt"
+    final val Organization     = "organization"
+    final val Name             = "name"
+    final val Author           = "author"
+    final val License          = "license"
+    final val SetUpGit         = "setUpGit"
+    final val SetUpTravis      = "setUpTravis"
+    final val SetUpWartremover = "setUpWartremover"
+    final val UseGitPrompt     = "useGitPrompt"
   }
 
   private final case class Args(organization: Option[String],
@@ -69,6 +73,7 @@ object FreshPlugin extends AutoPlugin {
                                 license: Option[License],
                                 setUpGit: Option[Boolean],
                                 setUpTravis: Option[Boolean],
+                                setUpWartremover: Option[Boolean],
                                 useGitPrompt: Option[Boolean])
 
   private final val DefaultOrganization = "default"
@@ -91,6 +96,7 @@ object FreshPlugin extends AutoPlugin {
       freshLicense := DefaultLicense,
       freshSetUpGit := true,
       freshSetUpTravis := true,
+      freshSetUpWartremover := false,
       freshUseGitPrompt := false
     )
   }
@@ -110,8 +116,9 @@ object FreshPlugin extends AutoPlugin {
     arg(Arg.License, licenseParser).? ~
     arg(Arg.SetUpGit, Bool).? ~
     arg(Arg.SetUpTravis, Bool).? ~
+    arg(Arg.SetUpWartremover, Bool).? ~
     arg(Arg.UseGitPrompt, Bool).?
-    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ gp => Args(o, n, a, l, g, t, gp) }
+    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ wr ~ gp => Args(o, n, a, l, g, t, wr, gp) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -119,24 +126,25 @@ object FreshPlugin extends AutoPlugin {
 
     def setting[A](key: SettingKey[A]) = Project.extract(state).get(key)
 
-    val buildDir     = setting(Keys.baseDirectory.in(ThisBuild)).toPath
-    val organization = args.organization.getOrElse(setting(freshOrganization))
-    val name         = args.name.getOrElse(setting(freshName))
-    val author       = args.author.getOrElse(setting(freshAuthor))
-    val license      = args.license.orElse(setting(freshLicense))
-    val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
-    val setUpTravis  = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
-    val useGitPrompt = args.useGitPrompt.getOrElse(setting(freshUseGitPrompt))
+    val buildDir         = setting(Keys.baseDirectory.in(ThisBuild)).toPath
+    val organization     = args.organization.getOrElse(setting(freshOrganization))
+    val name             = args.name.getOrElse(setting(freshName))
+    val author           = args.author.getOrElse(setting(freshAuthor))
+    val license          = args.license.orElse(setting(freshLicense))
+    val setUpGit         = args.setUpGit.getOrElse(setting(freshSetUpGit))
+    val setUpTravis      = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
+    val setUpWartremover = args.setUpWartremover.getOrElse(setting(freshSetUpWartremover))
+    val useGitPrompt     = args.useGitPrompt.getOrElse(setting(freshUseGitPrompt))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeAutomateScalafmtPlugin()
     fresh.writeBuildProperties()
-    fresh.writeBuildSbt(useGitPrompt, setUpTravis)
+    fresh.writeBuildSbt(useGitPrompt, setUpTravis, setUpWartremover)
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()
     fresh.writePackage()
-    fresh.writePlugins(setUpTravis)
+    fresh.writePlugins(setUpTravis, setUpWartremover)
     fresh.writeReadme()
     fresh.writeScalafmt()
     if (setUpTravis) fresh.writeTravisYml()

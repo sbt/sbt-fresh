@@ -102,7 +102,8 @@ private object Template {
                author: String,
                license: Option[License],
                useGitPrompt: Boolean,
-               setUpTravis: Boolean): String = {
+               setUpTravis: Boolean,
+               setUpWartremover: Boolean): String = {
     val nameIdentifier =
       if (name.segments.mkString == name) name else s"`$name`"
 
@@ -116,6 +117,12 @@ private object Template {
     }
 
     val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
+    val wartremoverSettings =
+      if (setUpWartremover)
+        """|,
+           |    wartremoverWarnings in (Compile, compile) ++= Warts.unsafe""".stripMargin
+      else
+        ""
 
     val promptSettings =
       if (useGitPrompt)
@@ -185,7 +192,7 @@ private object Template {
         |      "-encoding", "UTF-8"
         |    ),
         |    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
-        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$promptSettings
+        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$promptSettings$wartremoverSettings
         |)
         |
         |lazy val gitSettings =
@@ -253,16 +260,21 @@ private object Template {
         |""".stripMargin
   }
 
-  def plugins(setUpTravis: Boolean): String = {
+  def plugins(setUpTravis: Boolean, setUpWartremover: Boolean): String = {
     val travisPlugin =
       if (setUpTravis)
-        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.1.0")
+        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.0")
+           |""".stripMargin
+      else ""
+    val wartRemoverPlugin =
+      if (setUpWartremover)
+        """|addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.0.2")
            |""".stripMargin
       else ""
 
-    s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt" % "0.6.6")
-        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"      % "0.9.3")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "2.0.0")
+    s"""|$travisPlugin${wartRemoverPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "0.6.6")
+        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "2.0.0")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
         |""".stripMargin
