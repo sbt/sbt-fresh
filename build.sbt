@@ -59,15 +59,15 @@ lazy val commonSettings =
     publishMavenStyle := false
 )
 
+lazy val gitSettings =
+  Seq(
+    git.useGitDescribe := true
+  )
+
 lazy val scalafmtSettings =
   Seq(
     scalafmtOnCompile := true,
     scalafmtVersion := "1.0.0-RC3"
-  )
-
-lazy val gitSettings =
-  Seq(
-    git.useGitDescribe := true
   )
 
 lazy val sbtScriptedSettings =
