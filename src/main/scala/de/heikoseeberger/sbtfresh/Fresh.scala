@@ -43,9 +43,6 @@ private final class Fresh(buildDir: Path,
     git.commit().setMessage("Fresh project, created with sbt-fresh").call()
   }
 
-  def writeAutomateScalafmtPlugin(): Path =
-    write("project/AutomateScalafmtPlugin.scala", Template.automateScalafmtPlugin)
-
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 

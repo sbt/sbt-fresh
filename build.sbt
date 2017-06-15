@@ -31,6 +31,7 @@ lazy val library =
 lazy val settings =
   commonSettings ++
   gitSettings ++
+  scalafmtSettings ++
   sbtScriptedSettings
 
 lazy val commonSettings =
@@ -57,6 +58,12 @@ lazy val commonSettings =
     sbtPlugin := true,
     publishMavenStyle := false
 )
+
+lazy val scalafmtSettings =
+  Seq(
+    scalafmtOnCompile := true,
+    scalafmtVersion := "1.0.0-RC3"
+  )
 
 lazy val gitSettings =
   Seq(

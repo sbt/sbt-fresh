@@ -5,7 +5,6 @@ $ exists .travis.yml
 $ exists build.sbt
 $ exists LICENSE
 $ exists NOTICE
-$ exists project/AutomateScalafmtPlugin.scala
 $ exists project/build.properties
 $ exists project/plugins.sbt
 $ exists README.md

@@ -137,7 +137,6 @@ object FreshPlugin extends AutoPlugin {
     val useGitPrompt     = args.useGitPrompt.getOrElse(setting(freshUseGitPrompt))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
-    fresh.writeAutomateScalafmtPlugin()
     fresh.writeBuildProperties()
     fresh.writeBuildSbt(useGitPrompt, setUpTravis, setUpWartremover)
     fresh.writeGitignore()
