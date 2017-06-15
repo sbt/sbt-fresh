@@ -134,7 +134,8 @@ private object Template {
         |
         |lazy val scalafmtSettings =
         |  Seq(
-        |    git.useGitDescribe := true
+        |    scalafmtOnCompile := true,
+        |    scalafmtVersion := "1.0.0-RC3"
         |  )
         |""".stripMargin
   }
