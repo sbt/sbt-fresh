@@ -23,75 +23,6 @@ private object Template {
 
   private val year = now().getYear
 
-  def automateScalafmtPlugin: String =
-    """|import org.scalafmt.bootstrap.ScalafmtBootstrap
-       |import org.scalafmt.sbt.ScalafmtPlugin
-       |import sbt._
-       |import sbt.Keys._
-       |import sbt.inc.Analysis
-       |
-       |object AutomateScalafmtPlugin extends AutoPlugin {
-       |
-       |  object autoImport {
-       |    def automateScalafmtFor(configurations: Configuration*): Seq[Setting[_]] =
-       |      configurations.flatMap { c =>
-       |        inConfig(c)(
-       |          Seq(
-       |            compileInputs.in(compile) := {
-       |              scalafmtInc.value
-       |              compileInputs.in(compile).value
-       |            },
-       |            sourceDirectories.in(scalafmtInc) := Seq(scalaSource.value),
-       |            scalafmtInc := {
-       |              val cache   = streams.value.cacheDirectory / "scalafmt"
-       |              val include = includeFilter.in(scalafmtInc).value
-       |              val exclude = excludeFilter.in(scalafmtInc).value
-       |              val sources =
-       |                sourceDirectories
-       |                  .in(scalafmtInc)
-       |                  .value
-       |                  .descendantsExcept(include, exclude)
-       |                  .get
-       |                  .toSet
-       |              def format(handler: Set[File] => Unit, msg: String) = {
-       |                def update(handler: Set[File] => Unit, msg: String)(in: ChangeReport[File],
-       |                                                                    out: ChangeReport[File]) = {
-       |                  val label = Reference.display(thisProjectRef.value)
-       |                  val files = in.modified -- in.removed
-       |                  Analysis
-       |                    .counted("Scala source", "", "s", files.size)
-       |                    .foreach(count => streams.value.log.info(s"$msg $count in $label ..."))
-       |                  handler(files)
-       |                  files
-       |                }
-       |                FileFunction.cached(cache)(FilesInfo.hash, FilesInfo.exists)(update(handler, msg))(
-       |                  sources
-       |                )
-       |              }
-       |              def formattingHandler(files: Set[File]) =
-       |                if (files.nonEmpty) {
-       |                  val filesArg = files.map(_.getAbsolutePath).mkString(",")
-       |                  ScalafmtBootstrap.main(List("--quiet", "-i", "-f", filesArg))
-       |                }
-       |              format(formattingHandler, "Formatting")
-       |              format(_ => (), "Reformatted") // Recalculate the cache
-       |            }
-       |          )
-       |        )
-       |      }
-       |  }
-       |
-       |  private val scalafmtInc = taskKey[Unit]("Incrementally format modified sources")
-       |
-       |  override def requires = ScalafmtPlugin
-       |
-       |  override def trigger = allRequirements
-       |
-       |  override def projectSettings =
-       |    (includeFilter.in(scalafmtInc) := "*.scala") +: autoImport.automateScalafmtFor(Compile, Test)
-       |}
-       |""".stripMargin
-
   def buildProperties: String =
     """|sbt.version = 0.13.15
        |""".stripMargin
@@ -176,7 +107,8 @@ private object Template {
         |
         |lazy val settings =
         |  commonSettings ++
-        |  gitSettings
+        |  gitSettings ++
+        |  scalafmtSettings
         |
         |lazy val commonSettings =
         |  Seq(
@@ -196,6 +128,11 @@ private object Template {
         |)
         |
         |lazy val gitSettings =
+        |  Seq(
+        |    git.useGitDescribe := true
+        |  )
+        |
+        |lazy val scalafmtSettings =
         |  Seq(
         |    git.useGitDescribe := true
         |  )
@@ -272,8 +209,8 @@ private object Template {
            |""".stripMargin
       else ""
 
-    s"""|$travisPlugin${wartRemoverPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "0.6.6")
-        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
+    s"""|$travisPlugin${wartRemoverPlugin}addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
+        |addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.1")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "2.0.0")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
