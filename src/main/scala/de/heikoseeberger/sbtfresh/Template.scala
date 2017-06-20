@@ -206,7 +206,7 @@ private object Template {
       else ""
     val wartRemoverPlugin =
       if (setUpWartremover)
-        """|addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.0.2")
+        """|addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.1.1")
            |""".stripMargin
       else ""
 
