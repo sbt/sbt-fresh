@@ -253,7 +253,7 @@ private object Template {
        |indentOperator             = spray
        |maxColumn                  = 100
        |project.excludeFilters     = [".*\\.sbt"]
-       |rewrite.rules              = [RedundantBraces, RedundantParens, SortImports]
+       |rewrite.rules              = [AsciiSortImports, RedundantBraces, RedundantParens]
        |spaces.inImportCurlyBraces = true
        |unindentTopLevelOperators  = true
        |""".stripMargin
