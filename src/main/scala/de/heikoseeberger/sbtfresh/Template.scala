@@ -135,7 +135,7 @@ private object Template {
         |lazy val scalafmtSettings =
         |  Seq(
         |    scalafmtOnCompile := true,
-        |    scalafmtVersion := "1.0.0-RC4"
+        |    scalafmtVersion := "1.1.0"
         |  )
         |""".stripMargin
   }
