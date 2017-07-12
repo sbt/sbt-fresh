@@ -37,7 +37,7 @@ lazy val settings =
 lazy val commonSettings =
   Seq(
     // scalaVersion from .travis.yml via sbt-travisci
-    // scalaVersion := "2.12.1
+    // scalaVersion := "2.12.2
     organization := "de.heikoseeberger",
     organizationName := "Heiko Seeberger",
     startYear := Some(2016),
@@ -67,7 +67,8 @@ lazy val gitSettings =
 lazy val scalafmtSettings =
   Seq(
     scalafmtOnCompile := true,
-    scalafmtVersion := "1.0.0-RC4"
+    scalafmtOnCompile.in(Sbt) := false,
+    scalafmtVersion := "1.1.0"
   )
 
 lazy val sbtScriptedSettings =

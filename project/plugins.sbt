@@ -1,6 +1,6 @@
 addSbtPlugin("com.dwijnand"      % "sbt-travisci"  % "1.1.0")
 addSbtPlugin("com.typesafe.sbt"  % "sbt-git"       % "0.9.3")
-addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"  % "1.3")
+addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"  % "1.8")
 addSbtPlugin("de.heikoseeberger" % "sbt-header"    % "2.0.0")
 addSbtPlugin("me.lessis"         % "bintray-sbt"   % "0.3.0")
 
