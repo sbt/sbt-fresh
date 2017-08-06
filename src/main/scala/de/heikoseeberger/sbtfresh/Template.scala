@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 0.13.15
+    """|sbt.version = 0.13.16
        |""".stripMargin
 
   def buildSbt(organization: String,
@@ -68,8 +68,8 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.12.2",""".stripMargin
-      else """scalaVersion := "2.12.2","""
+           |    // scalaVersion := "2.12.3",""".stripMargin
+      else """scalaVersion := "2.12.3","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -212,7 +212,7 @@ private object Template {
       else ""
 
     s"""|$travisPlugin${wartRemoverPlugin}addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
-        |addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.8")
+        |addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.10")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "2.0.0")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
@@ -263,7 +263,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.12.2
+       |  - 2.12.3
        |
        |jdk:
        |  - oraclejdk8
