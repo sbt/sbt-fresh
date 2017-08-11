@@ -12,15 +12,14 @@ Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/0.13/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "2.11.1")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.0.0")
 ```
 
 You can define the following settings in your global build definition, which
 most probably sits at `~/.sbt/0.13/build.sbt`:
 
 ``` scala
-import de.heikoseeberger.sbtfresh.FreshPlugin.autoImport._
-import de.heikoseeberger.sbtfresh.license.License
+import de.heikoseeberger.sbtfresh.license.License // Only needed for `freshLicense` setting
 
 freshOrganization     := "doe.john"        // Organization – "default" by default
 freshAuthor           := "John Doe"        // Author – value of "user.name" system property or "default" by default
@@ -77,11 +76,9 @@ sbt-fresh creates a project with the following layout:
 + LICENSE                        // license file (Apache by default)
 + NOTICE
 + project
---+ AutomateScalafmtPlugin.scala // settings for scalafmt automation
 --+ build.properties             // sbt version
 --+ plugins.sbt                  // sbt-git, sbt-header, sbt-scalafmt
 + README.md
-+ shell-prompt.sbt               // show project id
 + src
 --+ main
 ----+ scala
