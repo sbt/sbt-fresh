@@ -1,7 +1,7 @@
-> fresh organization=org name=acme
+> fresh organization=org name=acme setUpTravis=false
 $ exists .gitignore
 $ exists .scalafmt.conf
-$ exists .travis.yml
+# $ exists .travis.yml
 $ exists build.sbt
 $ exists LICENSE
 $ exists NOTICE

@@ -46,7 +46,7 @@ lazy val commonSettings =
       "-unchecked",
       "-deprecation",
       "-language:_",
-      "-target:jvm-1.6",
+      "-target:jvm-1.8",
       "-encoding", "UTF-8"
     ),
     unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
@@ -72,9 +72,8 @@ lazy val scalafmtSettings =
   )
 
 lazy val sbtScriptedSettings =
-  scriptedSettings ++
   Seq(
-    scriptedLaunchOpts ++= Vector(
+    scriptedLaunchOpts ++= Seq(
       "-Xmx1024M",
       s"-Dplugin.version=${version.value}"
     )
