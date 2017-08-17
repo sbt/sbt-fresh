@@ -51,10 +51,6 @@ lazy val commonSettings =
     ),
     unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
     unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value),
-    shellPrompt in ThisBuild := { state =>
-      val project = Project.extract(state).currentRef.project
-      s"[$project]> "
-    },
     sbtPlugin := true,
     publishMavenStyle := false
 )
