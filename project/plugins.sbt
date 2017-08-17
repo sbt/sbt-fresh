@@ -1,4 +1,4 @@
-// addSbtPlugin("com.dwijnand"      % "sbt-travisci"  % "1.1.0")
+addSbtPlugin("com.dwijnand"      % "sbt-travisci"  % "1.1.0")
 addSbtPlugin("com.typesafe.sbt"  % "sbt-git"       % "0.9.3")
 addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"  % "1.10")
 addSbtPlugin("de.heikoseeberger" % "sbt-header"    % "3.0.1")
