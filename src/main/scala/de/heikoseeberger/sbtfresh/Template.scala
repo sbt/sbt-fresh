@@ -55,16 +55,6 @@ private object Template {
       else
         ""
 
-    val promptSettings =
-      if (useGitPrompt)
-        ""
-      else
-        """|,
-           |    shellPrompt in ThisBuild := { state =>
-           |      val project = Project.extract(state).currentRef.project
-           |      s"[$project]> "
-           |    }""".stripMargin
-
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
@@ -124,7 +114,7 @@ private object Template {
         |      "-encoding", "UTF-8"
         |    ),
         |    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
-        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$promptSettings$wartremoverSettings
+        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$wartremoverSettings
         |)
         |
         |lazy val gitSettings =
@@ -136,7 +126,7 @@ private object Template {
         |  Seq(
         |    scalafmtOnCompile := true,
         |    scalafmtOnCompile.in(Sbt) := false,
-        |    scalafmtVersion := "1.1.0"
+        |    scalafmtVersion := "1.2.0"
         |  )
         |""".stripMargin
   }
