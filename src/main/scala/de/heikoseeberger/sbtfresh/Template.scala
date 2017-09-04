@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.0.0
+    """|sbt.version = 1.0.1
        |""".stripMargin
 
   def buildSbt(organization: String,
@@ -35,8 +35,7 @@ private object Template {
                useGitPrompt: Boolean,
                setUpTravis: Boolean,
                setUpWartremover: Boolean): String = {
-    val nameIdentifier =
-      if (name.segments.mkString == name) name else s"`$name`"
+    val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
 
     val licenseSettings = {
       def settings(license: License) = {
@@ -48,6 +47,7 @@ private object Template {
     }
 
     val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
+
     val wartremoverSettings =
       if (setUpWartremover)
         """|,
@@ -59,7 +59,8 @@ private object Template {
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
            |    // scalaVersion := "2.12.3",""".stripMargin
-      else """scalaVersion := "2.12.3","""
+      else
+        """scalaVersion := "2.12.3","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -192,7 +193,7 @@ private object Template {
   def plugins(setUpTravis: Boolean, setUpWartremover: Boolean): String = {
     val travisPlugin =
       if (setUpTravis)
-        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.0")
+        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")
            |""".stripMargin
       else ""
     val wartRemoverPlugin =
