@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.0.1
+    """|sbt.version = 1.0.2
        |""".stripMargin
 
   def buildSbt(organization: String,
@@ -203,8 +203,8 @@ private object Template {
       else ""
 
     s"""|$travisPlugin${wartRemoverPlugin}addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
-        |addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.11")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "3.0.1")
+        |addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.12")
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "3.0.2")
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
         |""".stripMargin
