@@ -202,7 +202,7 @@ private object Template {
            |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.2.0")""".stripMargin
       else ""
 
-    s"""|${travisPlugin}addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.12")
+    s"""|${travisPlugin}addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.14")
         |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "3.0.2")${wartRemoverPlugin}
         |
