@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.0.3
+    """|sbt.version = 1.0.4
        |""".stripMargin
 
   def buildSbt(organization: String,
