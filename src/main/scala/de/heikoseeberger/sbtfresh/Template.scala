@@ -199,7 +199,7 @@ private object Template {
     val wartRemoverPlugin =
       if (setUpWartremover)
         """|
-           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.2.0")""".stripMargin
+           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.2.1")""".stripMargin
       else ""
 
     s"""|${travisPlugin}addSbtPlugin("com.lucidchart"    % "sbt-scalafmt"    % "1.14")
