@@ -18,7 +18,7 @@ addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.1.11")
 ```
 
 You can define the following settings in your global build definition, which
-most probably sits at `~/.sbt/0.13/build.sbt`:
+most probably sits at `~/.sbt/1.0/build.sbt`:
 
 ``` scala
 import de.heikoseeberger.sbtfresh.license.License // Only needed for `freshLicense` setting
