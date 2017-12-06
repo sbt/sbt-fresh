@@ -8,8 +8,10 @@ initial commit, etc.
 Notice: The build definition created by sbt-fresh is incompatible with the
 -Yno-adapted-args scalac option.
 
+Requirements: sbt 1.0 or higher
+
 Add sbt-fresh to your global plugins definition, which most probably resides
-under `~/.sbt/0.13/plugins/plugins.sbt`:
+under `~/.sbt/1.0/plugins/plugins.sbt`:
 
 ``` scala
 addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.1.11")
