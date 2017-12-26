@@ -74,7 +74,7 @@ private object Template {
         |    .settings(
         |      libraryDependencies ++= Seq(
         |        library.scalaCheck % Test,
-        |        library.scalaTest  % Test
+        |        library.utest      % Test
         |      )
         |    )
         |
@@ -86,10 +86,10 @@ private object Template {
         |  new {
         |    object Version {
         |      val scalaCheck = "1.13.5"
-        |      val scalaTest  = "3.0.4"
+        |      val utest      = "0.6.2"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
-        |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
+        |    val utest      = "com.lihaoyi"    %% "utest"      % Version.utest
         |  }
         |
         |// *****************************************************************************
