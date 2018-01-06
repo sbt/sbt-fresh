@@ -115,7 +115,8 @@ private object Template {
         |      "-encoding", "UTF-8"
         |    ),
         |    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
-        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value)$wartremoverSettings
+        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
+        |    testFrameworks += new TestFramework("utest.runner.Framework")$wartremoverSettings
         |)
         |
         |lazy val gitSettings =
