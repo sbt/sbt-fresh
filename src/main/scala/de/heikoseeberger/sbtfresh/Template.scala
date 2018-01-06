@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.0.4
+    """|sbt.version = 1.1.0
        |""".stripMargin
 
   def buildSbt(organization: String,
@@ -114,8 +114,8 @@ private object Template {
         |      "-target:jvm-1.8",
         |      "-encoding", "UTF-8"
         |    ),
-        |    unmanagedSourceDirectories.in(Compile) := Seq(scalaSource.in(Compile).value),
-        |    unmanagedSourceDirectories.in(Test) := Seq(scalaSource.in(Test).value)$wartremoverSettings
+        |    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
+        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value)$wartremoverSettings
         |)
         |
         |lazy val gitSettings =
