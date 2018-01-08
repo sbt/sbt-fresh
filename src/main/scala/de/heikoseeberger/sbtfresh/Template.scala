@@ -203,7 +203,7 @@ private object Template {
 
     s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.4.0")
         |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "4.0.0")${wartRemoverPlugin}
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "4.1.0")${wartRemoverPlugin}
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
         |""".stripMargin
