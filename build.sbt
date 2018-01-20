@@ -48,7 +48,8 @@ lazy val commonSettings =
       "-language:_",
       "-target:jvm-1.8",
       "-encoding", "UTF-8",
-      "-Ypartial-unification"
+      "-Ypartial-unification",
+      "-Ywarn-unused-import"
     ),
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
