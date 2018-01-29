@@ -32,3 +32,6 @@ snapshots
 
 # Log files
 *.log
+
+# jenv
+.java-version

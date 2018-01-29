@@ -169,6 +169,9 @@ private object Template {
        |
        |# Log files
        |*.log
+       |
+       |# jenv
+       |.java-version
        |""".stripMargin
 
   def notice(author: String): String =
