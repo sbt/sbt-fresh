@@ -14,7 +14,7 @@ Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/1.0/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.3.5")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.3.6")
 ```
 
 You can define the following settings in your global build definition, which
