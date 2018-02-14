@@ -48,11 +48,6 @@ object FreshPlugin extends AutoPlugin {
     val freshSetUpWartremover: SettingKey[Boolean] =
       settingKey("Include the sbt wartremover plugin - `false` by default")
 
-    val freshUseGitPrompt: SettingKey[Boolean] =
-      settingKey(
-        "Configure the sbt prompt to use the one provided by sbt-git - `false` by default"
-      )
-
     private def licenseIds = License.values.toVector.sortBy(_.id).mkString(", ")
   }
 
@@ -64,7 +59,6 @@ object FreshPlugin extends AutoPlugin {
     final val SetUpGit         = "setUpGit"
     final val SetUpTravis      = "setUpTravis"
     final val SetUpWartremover = "setUpWartremover"
-    final val UseGitPrompt     = "useGitPrompt"
   }
 
   private final case class Args(organization: Option[String],
@@ -73,8 +67,7 @@ object FreshPlugin extends AutoPlugin {
                                 license: Option[License],
                                 setUpGit: Option[Boolean],
                                 setUpTravis: Option[Boolean],
-                                setUpWartremover: Option[Boolean],
-                                useGitPrompt: Option[Boolean])
+                                setUpWartremover: Option[Boolean])
 
   private final val DefaultOrganization = "default"
   private final val DefaultAuthor       = "default"
@@ -96,8 +89,7 @@ object FreshPlugin extends AutoPlugin {
       freshLicense := DefaultLicense,
       freshSetUpGit := true,
       freshSetUpTravis := true,
-      freshSetUpWartremover := false,
-      freshUseGitPrompt := false
+      freshSetUpWartremover := false
     )
   }
 
@@ -116,9 +108,8 @@ object FreshPlugin extends AutoPlugin {
     arg(Arg.License, licenseParser).? ~
     arg(Arg.SetUpGit, Bool).? ~
     arg(Arg.SetUpTravis, Bool).? ~
-    arg(Arg.SetUpWartremover, Bool).? ~
-    arg(Arg.UseGitPrompt, Bool).?
-    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ wr ~ gp => Args(o, n, a, l, g, t, wr, gp) }
+    arg(Arg.SetUpWartremover, Bool).?
+    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ wr => Args(o, n, a, l, g, t, wr) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -134,11 +125,10 @@ object FreshPlugin extends AutoPlugin {
     val setUpGit         = args.setUpGit.getOrElse(setting(freshSetUpGit))
     val setUpTravis      = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
     val setUpWartremover = args.setUpWartremover.getOrElse(setting(freshSetUpWartremover))
-    val useGitPrompt     = args.useGitPrompt.getOrElse(setting(freshUseGitPrompt))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeBuildProperties()
-    fresh.writeBuildSbt(useGitPrompt, setUpTravis, setUpWartremover)
+    fresh.writeBuildSbt(setUpTravis, setUpWartremover)
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()

@@ -32,7 +32,6 @@ private object Template {
                packageSegments: Vector[String],
                author: String,
                license: Option[License],
-               useGitPrompt: Boolean,
                setUpTravis: Boolean,
                setUpWartremover: Boolean): String = {
     val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
@@ -45,8 +44,6 @@ private object Template {
       }
       license.map(settings).getOrElse("")
     }
-
-    val gitPromptPlugin = if (useGitPrompt) ", GitBranchPrompt" else ""
 
     val wartremoverSettings =
       if (setUpWartremover)
@@ -69,7 +66,7 @@ private object Template {
         |lazy val $nameIdentifier =
         |  project
         |    .in(file("."))
-        |    .enablePlugins(AutomateHeaderPlugin, GitVersioning$gitPromptPlugin)
+        |    .enablePlugins(AutomateHeaderPlugin)
         |    .settings(settings)
         |    .settings(
         |      libraryDependencies ++= Seq(
@@ -98,7 +95,6 @@ private object Template {
         |
         |lazy val settings =
         |  commonSettings ++
-        |  gitSettings ++
         |  scalafmtSettings
         |
         |lazy val commonSettings =
@@ -120,11 +116,6 @@ private object Template {
         |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
         |    testFrameworks += new TestFramework("utest.runner.Framework")$wartremoverSettings
         |)
-        |
-        |lazy val gitSettings =
-        |  Seq(
-        |    git.useGitDescribe := true
-        |  )
         |
         |lazy val scalafmtSettings =
         |  Seq(
@@ -197,17 +188,19 @@ private object Template {
   def plugins(setUpTravis: Boolean, setUpWartremover: Boolean): String = {
     val travisPlugin =
       if (setUpTravis)
-        """|addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")
-           |""".stripMargin
-      else ""
+        """|
+           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")""".stripMargin
+      else
+        ""
     val wartRemoverPlugin =
       if (setUpWartremover)
         """|
            |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.2.1")""".stripMargin
-      else ""
+      else
+        ""
 
-    s"""|${travisPlugin}addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.4.0")
-        |addSbtPlugin("com.typesafe.sbt"  % "sbt-git"         % "0.9.3")
+    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "2.0.0")${travisPlugin}
+        |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.4.0")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "4.1.0")${wartRemoverPlugin}
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git

@@ -5,7 +5,7 @@
 lazy val `sbt-fresh` =
   project
     .in(file("."))
-    .enablePlugins(AutomateHeaderPlugin, GitVersioning)
+    .enablePlugins(AutomateHeaderPlugin)
     .settings(settings)
     .settings(
       addSbtPlugin(library.sbtGit)
@@ -30,7 +30,6 @@ lazy val library =
 
 lazy val settings =
   commonSettings ++
-  gitSettings ++
   scalafmtSettings ++
   sbtScriptedSettings
 
@@ -56,11 +55,6 @@ lazy val commonSettings =
     sbtPlugin := true,
     publishMavenStyle := false
 )
-
-lazy val gitSettings =
-  Seq(
-    git.useGitDescribe := true
-  )
 
 lazy val scalafmtSettings =
   Seq(
