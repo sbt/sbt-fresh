@@ -14,7 +14,7 @@ Add sbt-fresh to your global plugins definition, which most probably resides
 under `~/.sbt/1.0/plugins/plugins.sbt`:
 
 ``` scala
-addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "3.3.6")
+addSbtPlugin("de.heikoseeberger" % "sbt-fresh" % "4.0.0")
 ```
 
 You can define the following settings in your global build definition, which
@@ -29,7 +29,6 @@ freshLicense          := Some(License.mit) // Optional license – `apache20` by
 freshSetUpGit         := true              // Initialize a Git repo and create an initial commit – `true` by default
 freshSetUpTravis      := true              // Configure Travis for Continuous Integration - `true` by default
 freshSetUpWartremover := true              // Include the sbt wartremover (http://www.wartremover.org) plugin - `false` by default
-freshUseGitPrompt     := true              // Use the prompt from the sbt-git plugin - `false` by default
 ```
 
 Other settings which probably shouldn't be set globally:
@@ -50,7 +49,6 @@ arguments (hit tab for auto completion) which override the respective settings:
 - `setUpGit`
 - `setUpTravis`
 - `setUpWartremover`
-- `useGitPrompt`
 
 Example:
 
