@@ -46,7 +46,7 @@ private final class Fresh(buildDir: Path,
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(useGitPrompt: Boolean, setUpTravis: Boolean, setUpWartremover: Boolean): Path =
+  def writeBuildSbt(setUpTravis: Boolean, setUpWartremover: Boolean): Path =
     write(
       "build.sbt",
       Template.buildSbt(organization,
@@ -54,7 +54,6 @@ private final class Fresh(buildDir: Path,
                         packageSegments,
                         author,
                         license,
-                        useGitPrompt,
                         setUpTravis,
                         setUpWartremover)
     )
