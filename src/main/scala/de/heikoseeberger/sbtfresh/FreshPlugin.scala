@@ -19,7 +19,7 @@ package de.heikoseeberger.sbtfresh
 import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
-import sbt.{ settingKey, AutoPlugin, Command, Keys, Project, SettingKey, State, ThisBuild }
+import sbt.{ AutoPlugin, Command, Keys, Project, SettingKey, State, ThisBuild, settingKey }
 
 object FreshPlugin extends AutoPlugin {
 

@@ -200,7 +200,7 @@ private object Template {
         ""
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "3.0.0")${travisPlugin}
-        |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.4.0")
+        |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.5.0")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0")${wartRemoverPlugin}
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
@@ -238,13 +238,14 @@ private object Template {
   def scalafmtConf: String =
     """|style = defaultWithAlign
        |
-       |danglingParentheses        = true
-       |indentOperator             = spray
-       |maxColumn                  = 100
-       |project.excludeFilters     = [".*\\.sbt"]
-       |rewrite.rules              = [AsciiSortImports, RedundantBraces, RedundantParens]
-       |spaces.inImportCurlyBraces = true
-       |unindentTopLevelOperators  = true
+       |danglingParentheses               = true
+       |indentOperator                    = spray
+       |maxColumn                         = 100
+       |newlines.alwaysBeforeMultilineDef = true
+       |project.excludeFilters            = [".*\\.sbt"]
+       |rewrite.rules                     = [AsciiSortImports, RedundantBraces, RedundantParens]
+       |spaces.inImportCurlyBraces        = true
+       |unindentTopLevelOperators         = true
        |""".stripMargin
 
   def travisYml: String =
