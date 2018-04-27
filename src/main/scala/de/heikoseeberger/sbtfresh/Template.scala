@@ -57,7 +57,7 @@ private object Template {
         """|// scalaVersion from .travis.yml via sbt-travisci
            |    // scalaVersion := "2.12.4",""".stripMargin
       else
-        """scalaVersion := "2.12.4","""
+        """scalaVersion := "2.12.6","""
 
     s"""|// *****************************************************************************
         |// Projects
