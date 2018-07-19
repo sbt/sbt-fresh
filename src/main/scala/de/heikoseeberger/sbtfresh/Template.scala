@@ -48,7 +48,7 @@ private object Template {
     val wartremoverSettings =
       if (setUpWartremover)
         """|,
-           |    wartremoverWarnings in (Compile, compile) ++= Warts.unsafe""".stripMargin
+           |    Compile / compile / wartremoverWarnings ++= Warts.unsafe""".stripMargin
       else
         ""
 
@@ -195,7 +195,7 @@ private object Template {
     val wartRemoverPlugin =
       if (setUpWartremover)
         """|
-           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.2.1")""".stripMargin
+           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.3.1")""".stripMargin
       else
         ""
 
