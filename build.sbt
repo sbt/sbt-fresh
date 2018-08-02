@@ -5,7 +5,7 @@
 lazy val `sbt-fresh` =
   project
     .in(file("."))
-    .enablePlugins(AutomateHeaderPlugin)
+    .enablePlugins(AutomateHeaderPlugin, SbtPlugin)
     .settings(settings)
     .settings(
       addSbtPlugin(library.sbtGit)
@@ -52,7 +52,6 @@ lazy val commonSettings =
     ),
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-    sbtPlugin := true,
     publishMavenStyle := false
 )
 
