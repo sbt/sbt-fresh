@@ -18,7 +18,7 @@ lazy val `sbt-fresh` =
 lazy val library =
   new {
     object Version {
-      val sbtGit = "0.9.3"
+      val sbtGit = "1.0.0"
     }
     val sbtGit = "com.typesafe.sbt" % "sbt-git" % Version.sbtGit
   }
