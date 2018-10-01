@@ -43,7 +43,7 @@ object FreshPlugin extends AutoPlugin {
       settingKey("Initialize a Git repo and create an initial commit – `true` by default")
 
     val freshSetUpTravis: SettingKey[Boolean] =
-      settingKey("Configure Travis for Continuous Integration - `true` by default")
+      settingKey("Configure Travis for Continuous Integration - `false` by default")
 
     val freshSetUpWartremover: SettingKey[Boolean] =
       settingKey("Include the sbt wartremover plugin - `false` by default")
@@ -88,7 +88,7 @@ object FreshPlugin extends AutoPlugin {
       freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
       freshLicense := DefaultLicense,
       freshSetUpGit := true,
-      freshSetUpTravis := true,
+      freshSetUpTravis := false,
       freshSetUpWartremover := false
     )
   }

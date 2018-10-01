@@ -55,9 +55,9 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.12.4",""".stripMargin
+           |    // scalaVersion := "2.12.7",""".stripMargin
       else
-        """scalaVersion := "2.12.6","""
+        """scalaVersion := "2.12.7","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -83,7 +83,7 @@ private object Template {
         |  new {
         |    object Version {
         |      val scalaCheck = "1.14.0"
-        |      val utest      = "0.6.5"
+        |      val utest      = "0.6.6"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
         |    val utest      = "com.lihaoyi"    %% "utest"      % Version.utest
@@ -199,7 +199,7 @@ private object Template {
       else
         ""
 
-    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "3.0.0")${travisPlugin}
+    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "3.1.0")${travisPlugin}
         |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.5.1")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0")${wartRemoverPlugin}
         |
