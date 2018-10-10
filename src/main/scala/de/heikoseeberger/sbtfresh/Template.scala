@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.2.3
+    """|sbt.version = 1.2.4
        |""".stripMargin
 
   def buildSbt(organization: String,
@@ -195,7 +195,7 @@ private object Template {
     val wartRemoverPlugin =
       if (setUpWartremover)
         """|
-           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.3.7")""".stripMargin
+           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.3.1")""".stripMargin
       else
         ""
 
