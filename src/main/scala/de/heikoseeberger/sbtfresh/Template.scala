@@ -55,9 +55,9 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.12.7",""".stripMargin
+           |    // scalaVersion := "2.12.8",""".stripMargin
       else
-        """scalaVersion := "2.12.7","""
+        """scalaVersion := "2.12.8","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -71,7 +71,7 @@ private object Template {
         |    .settings(
         |      libraryDependencies ++= Seq(
         |        library.scalaCheck % Test,
-        |        library.utest      % Test
+        |        library.utest      % Test,
         |      )
         |    )
         |
@@ -110,16 +110,16 @@ private object Template {
         |      "-target:jvm-1.8",
         |      "-encoding", "UTF-8",
         |      "-Ypartial-unification",
-        |      "-Ywarn-unused-import"
+        |      "-Ywarn-unused-import",
         |    ),
         |    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
         |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-        |    testFrameworks += new TestFramework("utest.runner.Framework")$wartremoverSettings
+        |    testFrameworks += new TestFramework("utest.runner.Framework")$wartremoverSettings,
         |)
         |
         |lazy val scalafmtSettings =
         |  Seq(
-        |    scalafmtOnCompile := true
+        |    scalafmtOnCompile := true,
         |  )
         |""".stripMargin
   }
@@ -252,7 +252,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.12.4
+       |  - 2.12.8
        |
        |jdk:
        |  - oraclejdk8
