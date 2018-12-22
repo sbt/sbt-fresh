@@ -8,7 +8,7 @@ lazy val `sbt-fresh` =
     .enablePlugins(AutomateHeaderPlugin, SbtPlugin)
     .settings(settings)
     .settings(
-      addSbtPlugin(library.sbtGit)
+      addSbtPlugin(library.sbtGit),
     )
 
 // *****************************************************************************
@@ -18,7 +18,7 @@ lazy val `sbt-fresh` =
 lazy val library =
   new {
     object Version {
-      val sbtGit = "1.0.0"
+      val sbtGit = "1.0.0",
     }
     val sbtGit = "com.typesafe.sbt" % "sbt-git" % Version.sbtGit
   }
@@ -52,18 +52,18 @@ lazy val commonSettings =
     ),
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-    publishMavenStyle := false
+    publishMavenStyle := false,
 )
 
 lazy val scalafmtSettings =
   Seq(
-    scalafmtOnCompile := true
+    scalafmtOnCompile := true,
   )
 
 lazy val sbtScriptedSettings =
   Seq(
     scriptedLaunchOpts ++= Seq(
       "-Xmx1024M",
-      s"-Dplugin.version=${version.value}"
+      s"-Dplugin.version=${version.value}",
     )
   )
