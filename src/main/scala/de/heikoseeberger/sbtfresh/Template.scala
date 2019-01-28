@@ -113,8 +113,7 @@ private object Template {
         |      "-Ywarn-unused-import",
         |    ),
         |    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
-        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-        |    testFrameworks += new TestFramework("utest.runner.Framework")$wartremoverSettings,
+        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value)$wartremoverSettings,
         |)
         |
         |lazy val scalafmtSettings =
