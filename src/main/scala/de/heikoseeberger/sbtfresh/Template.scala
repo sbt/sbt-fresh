@@ -188,7 +188,7 @@ private object Template {
     val travisPlugin =
       if (setUpTravis)
         """|
-           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.1")""".stripMargin
+           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.3")""".stripMargin
       else
         ""
     val wartRemoverPlugin =
@@ -200,7 +200,7 @@ private object Template {
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "3.1.0")${travisPlugin}
         |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.5.1")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.0.0")${wartRemoverPlugin}
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.1.0")${wartRemoverPlugin}
         |
         |libraryDependencies += "org.slf4j" % "slf4j-nop" % "1.7.25" // Needed by sbt-git
         |""".stripMargin
