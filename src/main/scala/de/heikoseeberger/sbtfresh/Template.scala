@@ -162,6 +162,10 @@ private object Template {
        |
        |# jenv
        |.java-version
+       |
+       |# Metals
+       |.metals
+       |.bloop
        |""".stripMargin
 
   def notice(author: String): String =
