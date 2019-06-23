@@ -57,7 +57,7 @@ private object Template {
         """|// scalaVersion from .travis.yml via sbt-travisci
            |    // scalaVersion := "2.12.8",""".stripMargin
       else
-        """scalaVersion := "2.12.8","""
+        """scalaVersion := "2.13.0","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -83,7 +83,7 @@ private object Template {
         |  new {
         |    object Version {
         |      val scalaCheck = "1.14.0"
-        |      val scalaTest  = "3.0.7"
+        |      val scalaTest  = "3.0.8"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
         |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
@@ -202,9 +202,9 @@ private object Template {
       else
         ""
 
-    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "3.3.0")${travisPlugin}
+    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.0.0")${travisPlugin}
         |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.5.1")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.1.0")${wartRemoverPlugin}
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0")${wartRemoverPlugin}
         |""".stripMargin
   }
 
@@ -253,7 +253,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.12.8
+       |  - 2.13.0
        |
        |jdk:
        |  - oraclejdk8
