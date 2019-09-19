@@ -8,6 +8,5 @@ $ exists NOTICE
 $ exists project/build.properties
 $ exists project/plugins.sbt
 $ exists README.md
-$ exists src/main/scala/org/acme/package.scala
 > checkInitialCommit
 > compile

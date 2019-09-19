@@ -24,16 +24,18 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.2.8
+    """|sbt.version = 1.3.0
        |""".stripMargin
 
-  def buildSbt(organization: String,
-               name: String,
-               packageSegments: Vector[String],
-               author: String,
-               license: Option[License],
-               setUpTravis: Boolean,
-               setUpWartremover: Boolean): String = {
+  def buildSbt(
+      organization: String,
+      name: String,
+      packageSegments: Vector[String],
+      author: String,
+      license: Option[License],
+      setUpTravis: Boolean,
+      setUpWartremover: Boolean
+  ): String = {
     val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
 
     val licenseSettings = {
@@ -55,9 +57,9 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.12.8",""".stripMargin
+           |    // scalaVersion := "2.13.1",""".stripMargin
       else
-        """scalaVersion := "2.13.0","""
+        """scalaVersion := "2.13.1","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -82,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck = "1.14.0"
+        |      val scalaCheck = "1.14.1"
         |      val scalaTest  = "3.0.8"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
@@ -171,27 +173,11 @@ private object Template {
     s"""|Copyright $year $author
         |""".stripMargin
 
-  def `package`(packageSegments: Vector[String], author: String): String = {
-    val superPackage = packageSegments.init.mkString(".")
-    val lastSegment  = packageSegments.last
-    s"""|
-        |package $superPackage
-        |
-        |package object $lastSegment {
-        |
-        |  type Traversable[+A] = scala.collection.immutable.Traversable[A]
-        |  type Iterable[+A]    = scala.collection.immutable.Iterable[A]
-        |  type Seq[+A]         = scala.collection.immutable.Seq[A]
-        |  type IndexedSeq[+A]  = scala.collection.immutable.IndexedSeq[A]
-        |}
-        |""".stripMargin
-  }
-
   def plugins(setUpTravis: Boolean, setUpWartremover: Boolean): String = {
     val travisPlugin =
       if (setUpTravis)
         """|
-           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.1.3")""".stripMargin
+           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0")""".stripMargin
       else
         ""
     val wartRemoverPlugin =
@@ -202,8 +188,8 @@ private object Template {
         ""
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.0.0")${travisPlugin}
-        |addSbtPlugin("com.geirsson"      % "sbt-scalafmt"    % "1.5.1")
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0")${wartRemoverPlugin}
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0")
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.0.5")${wartRemoverPlugin}
         |""".stripMargin
   }
 
@@ -236,14 +222,16 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|style = defaultWithAlign
+    """|version = "2.0.0"
+       |
+       |style = "defaultWithAlign"
        |
        |danglingParentheses               = true
-       |indentOperator                    = spray
+       |indentOperator                    = "spray"
        |maxColumn                         = 100
        |newlines.alwaysBeforeMultilineDef = true
        |project.excludeFilters            = [".*\\.sbt"]
-       |rewrite.rules                     = [AsciiSortImports, RedundantBraces, RedundantParens]
+       |rewrite.rules                     = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
        |spaces.inImportCurlyBraces        = true
        |unindentTopLevelOperators         = true
        |""".stripMargin
@@ -252,7 +240,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.13.0
+       |  - 2.13.1
        |
        |jdk:
        |  - oraclejdk8

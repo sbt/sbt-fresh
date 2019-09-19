@@ -22,11 +22,13 @@ import java.nio.file.{ Files, Path }
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import org.eclipse.jgit.api.Git
 
-private final class Fresh(buildDir: Path,
-                          organization: String,
-                          name: String,
-                          author: String,
-                          license: Option[License]) {
+private final class Fresh(
+    buildDir: Path,
+    organization: String,
+    name: String,
+    author: String,
+    license: Option[License]
+) {
 
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
@@ -49,13 +51,15 @@ private final class Fresh(buildDir: Path,
   def writeBuildSbt(setUpTravis: Boolean, setUpWartremover: Boolean): Path =
     write(
       "build.sbt",
-      Template.buildSbt(organization,
-                        name,
-                        packageSegments,
-                        author,
-                        license,
-                        setUpTravis,
-                        setUpWartremover)
+      Template.buildSbt(
+        organization,
+        name,
+        packageSegments,
+        author,
+        license,
+        setUpTravis,
+        setUpWartremover
+      )
     )
 
   def writeGitignore(): Path =
@@ -66,11 +70,6 @@ private final class Fresh(buildDir: Path,
 
   def writeNotice(): Path =
     write("NOTICE", Template.notice(author))
-
-  def writePackage(): Path = {
-    val path = packageSegments.foldLeft("src/main/scala")(_ + "/" + _) + "/package.scala"
-    write(path, Template.`package`(packageSegments, author))
-  }
 
   def writePlugins(setUpTravis: Boolean, setUpWartremover: Boolean): Path =
     write("project/plugins.sbt", Template.plugins(setUpTravis, setUpWartremover))
