@@ -61,13 +61,15 @@ object FreshPlugin extends AutoPlugin {
     final val SetUpWartremover = "setUpWartremover"
   }
 
-  private final case class Args(organization: Option[String],
-                                name: Option[String],
-                                author: Option[String],
-                                license: Option[License],
-                                setUpGit: Option[Boolean],
-                                setUpTravis: Option[Boolean],
-                                setUpWartremover: Option[Boolean])
+  private final case class Args(
+      organization: Option[String],
+      name: Option[String],
+      author: Option[String],
+      license: Option[License],
+      setUpGit: Option[Boolean],
+      setUpTravis: Option[Boolean],
+      setUpWartremover: Option[Boolean]
+  )
 
   private final val DefaultOrganization = "default"
   private final val DefaultAuthor       = "default"
@@ -102,13 +104,13 @@ object FreshPlugin extends AutoPlugin {
         .map(l => (l.id: Parser[String]).map(_ => l))
         .reduceLeft(_ | _)
     val args =
-    arg(Arg.Organization, NotQuoted).? ~
-    arg(Arg.Name, NotQuoted).? ~
-    arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
-    arg(Arg.License, licenseParser).? ~
-    arg(Arg.SetUpGit, Bool).? ~
-    arg(Arg.SetUpTravis, Bool).? ~
-    arg(Arg.SetUpWartremover, Bool).?
+      arg(Arg.Organization, NotQuoted).? ~
+      arg(Arg.Name, NotQuoted).? ~
+      arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
+      arg(Arg.License, licenseParser).? ~
+      arg(Arg.SetUpGit, Bool).? ~
+      arg(Arg.SetUpTravis, Bool).? ~
+      arg(Arg.SetUpWartremover, Bool).?
     args.map { case o ~ n ~ a ~ l ~ g ~ t ~ wr => Args(o, n, a, l, g, t, wr) }
   }
 
@@ -132,7 +134,6 @@ object FreshPlugin extends AutoPlugin {
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()
-    fresh.writePackage()
     fresh.writePlugins(setUpTravis, setUpWartremover)
     fresh.writeReadme()
     fresh.writeScalafmt()
