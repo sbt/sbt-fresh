@@ -24,7 +24,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.3.0
+    """|sbt.version = 1.3.2
        |""".stripMargin
 
   def buildSbt(
@@ -84,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck = "1.14.1"
+        |      val scalaCheck = "1.14.2"
         |      val scalaTest  = "3.0.8"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
