@@ -183,13 +183,13 @@ private object Template {
     val wartRemoverPlugin =
       if (setUpWartremover)
         """|
-           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.4.2")""".stripMargin
+           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.4.3")""".stripMargin
       else
         ""
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.0.0")${travisPlugin}
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.2.0")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.0.5")${wartRemoverPlugin}
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.2.1")${wartRemoverPlugin}
         |""".stripMargin
   }
 
