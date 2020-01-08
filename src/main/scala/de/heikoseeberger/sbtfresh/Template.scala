@@ -84,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck = "1.14.2"
+        |      val scalaCheck = "1.14.3"
         |      val scalaTest  = "3.1.0"
         |    }
         |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
@@ -188,8 +188,8 @@ private object Template {
         ""
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.0.0")${travisPlugin}
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.3.1")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.2.1")${wartRemoverPlugin}
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.4.0")
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.3.0")${wartRemoverPlugin}
         |""".stripMargin
   }
 
@@ -222,7 +222,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.2.1"
+    """|version = "2.3.0"
        |
        |style = "defaultWithAlign"
        |
