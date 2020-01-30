@@ -72,8 +72,9 @@ private object Template {
         |    .settings(settings)
         |    .settings(
         |      libraryDependencies ++= Seq(
-        |        library.scalaCheck % Test,
-        |        library.scalaTest  % Test,
+        |        library.scalaCheck              % Test,
+        |        library.scalaTest               % Test,
+        |        library.scalaTestPlusScalaCheck % Test,
         |      )
         |    )
         |
@@ -84,11 +85,13 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck = "1.14.3"
-        |      val scalaTest  = "3.1.0"
+        |      val scalaCheck              = "1.14.3"
+        |      val scalaTest               = "3.1.0"
+        |      val scalaTestPlusScalaCheck = "3.1.0.1"
         |    }
-        |    val scalaCheck = "org.scalacheck" %% "scalacheck" % Version.scalaCheck
-        |    val scalaTest  = "org.scalatest"  %% "scalatest"  % Version.scalaTest
+        |    val scalaCheck              = "org.scalacheck"    %% "scalacheck"      % Version.scalaCheck
+        |    val scalaTest               = "org.scalatest"     %% "scalatest"       % Version.scalaTest
+        |    val scalaTestPlusScalaCheck = "org.scalatestplus" %% "scalacheck-1-14" % Version.scalaTestPlusScalaCheck
         |  }
         |
         |// *****************************************************************************
@@ -222,7 +225,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.3.0"
+    """|version = "2.3.1"
        |
        |style = "defaultWithAlign"
        |
