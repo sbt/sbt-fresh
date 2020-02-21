@@ -86,8 +86,8 @@ private object Template {
         |  new {
         |    object Version {
         |      val scalaCheck              = "1.14.3"
-        |      val scalaTest               = "3.1.0"
-        |      val scalaTestPlusScalaCheck = "3.1.0.1"
+        |      val scalaTest               = "3.1.1"
+        |      val scalaTestPlusScalaCheck = "3.1.1.1"
         |    }
         |    val scalaCheck              = "org.scalacheck"    %% "scalacheck"      % Version.scalaCheck
         |    val scalaTest               = "org.scalatest"     %% "scalatest"       % Version.scalaTest
