@@ -115,9 +115,7 @@ private object Template {
         |      "-target:jvm-1.8",
         |      "-encoding", "UTF-8",
         |      "-Ywarn-unused:imports",
-        |    ),
-        |    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
-        |    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value)$wartremoverSettings,
+        |    )$wartremoverSettings,
         |)
         |
         |lazy val scalafmtSettings =
