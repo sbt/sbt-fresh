@@ -75,7 +75,7 @@ private object Template {
         |        library.scalaCheck              % Test,
         |        library.scalaTest               % Test,
         |        library.scalaTestPlusScalaCheck % Test,
-        |      )
+        |      ),
         |    )
         |
         |// *****************************************************************************
