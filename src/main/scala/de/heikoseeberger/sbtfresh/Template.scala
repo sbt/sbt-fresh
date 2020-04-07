@@ -112,7 +112,6 @@ private object Template {
         |      "-unchecked",
         |      "-deprecation",
         |      "-language:_",
-        |      "-target:jvm-1.8",
         |      "-encoding", "UTF-8",
         |      "-Ywarn-unused:imports",
         |    )$wartremoverSettings,
