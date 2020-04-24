@@ -59,7 +59,7 @@ private object Template {
         """|// scalaVersion from .travis.yml via sbt-travisci
            |    // scalaVersion := "2.13.1",""".stripMargin
       else
-        """scalaVersion := "2.13.1","""
+        """scalaVersion := "2.13.2","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -69,7 +69,7 @@ private object Template {
         |  project
         |    .in(file("."))
         |    .enablePlugins(AutomateHeaderPlugin)
-        |    .settings(settings)
+        |    .settings(commonSettings)
         |    .settings(
         |      libraryDependencies ++= Seq(
         |        library.scalaCheck              % Test,
@@ -98,10 +98,6 @@ private object Template {
         |// Settings
         |// *****************************************************************************
         |
-        |lazy val settings =
-        |  commonSettings ++
-        |  scalafmtSettings
-        |
         |lazy val commonSettings =
         |  Seq(
         |    $scalaVersion
@@ -114,13 +110,9 @@ private object Template {
         |      "-language:_",
         |      "-encoding", "UTF-8",
         |      "-Ywarn-unused:imports",
-        |    )$wartremoverSettings,
+        |    ),
+        |    scalafmtOnCompile := true$wartremoverSettings,
         |)
-        |
-        |lazy val scalafmtSettings =
-        |  Seq(
-        |    scalafmtOnCompile := true,
-        |  )
         |""".stripMargin
   }
 
