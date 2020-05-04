@@ -106,7 +106,7 @@ object FreshPlugin extends AutoPlugin {
     val args =
       arg(Arg.Organization, NotQuoted).? ~
       arg(Arg.Name, NotQuoted).? ~
-      arg(Arg.Author, token(StringBasic)).? ~ // Without token tab completion becomes non-computable!
+      arg(Arg.Author, token(StringBasic)).? ~
       arg(Arg.License, licenseParser).? ~
       arg(Arg.SetUpGit, Bool).? ~
       arg(Arg.SetUpTravis, Bool).? ~
