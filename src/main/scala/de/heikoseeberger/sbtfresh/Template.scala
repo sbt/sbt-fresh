@@ -214,15 +214,14 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.4.2"
+    """|version = "2.5.1"
        |
-       |style = "defaultWithAlign"
+       |preset = "defaultWithAlign"
        |
-       |danglingParentheses               = true
-       |indentOperator                    = "spray"
+       |danglingParentheses.preset        = true
+       |indentOperator.preset             = "spray"
        |maxColumn                         = 100
        |newlines.alwaysBeforeMultilineDef = true
-       |project.excludeFilters            = [".*\\.sbt"]
        |rewrite.rules                     = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
        |spaces.inImportCurlyBraces        = true
        |unindentTopLevelOperators         = true
@@ -232,7 +231,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.13.1
+       |  - 2.13.2
        |
        |jdk:
        |  - openjdk8
