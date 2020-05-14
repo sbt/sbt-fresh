@@ -57,7 +57,7 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.13.1",""".stripMargin
+           |    // scalaVersion := "2.13.2",""".stripMargin
       else
         """scalaVersion := "2.13.2","""
 
@@ -72,9 +72,8 @@ private object Template {
         |    .settings(commonSettings)
         |    .settings(
         |      libraryDependencies ++= Seq(
-        |        library.scalaCheck              % Test,
-        |        library.scalaTest               % Test,
-        |        library.scalaTestPlusScalaCheck % Test,
+        |        library.munit           % Test,
+        |        library.munitScalaCheck % Test,
         |      ),
         |    )
         |
@@ -85,13 +84,10 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val scalaCheck              = "1.14.3"
-        |      val scalaTest               = "3.1.1"
-        |      val scalaTestPlusScalaCheck = "3.1.1.1"
+        |      val munit = "0.7.7"
         |    }
-        |    val scalaCheck              = "org.scalacheck"    %% "scalacheck"      % Version.scalaCheck
-        |    val scalaTest               = "org.scalatest"     %% "scalatest"       % Version.scalaTest
-        |    val scalaTestPlusScalaCheck = "org.scalatestplus" %% "scalacheck-1-14" % Version.scalaTestPlusScalaCheck
+        |    val munit           = "org.scalameta"  %% "munit"            % Version.munit
+        |    val munitScalaCheck = "org.scalameta"  %% "munit-scalacheck" % Version.munit
         |  }
         |
         |// *****************************************************************************
@@ -111,6 +107,7 @@ private object Template {
         |      "-encoding", "UTF-8",
         |      "-Ywarn-unused:imports",
         |    ),
+        |    testFrameworks += new TestFramework("munit.Framework"),
         |    scalafmtOnCompile := true$wartremoverSettings,
         |)
         |""".stripMargin
