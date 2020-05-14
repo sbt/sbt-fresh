@@ -178,7 +178,7 @@ private object Template {
 
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.0.0")${travisPlugin}
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.6.0")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.3.4")${wartRemoverPlugin}
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.4.0")${wartRemoverPlugin}
         |""".stripMargin
   }
 
