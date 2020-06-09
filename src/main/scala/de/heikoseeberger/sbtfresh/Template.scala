@@ -84,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val munit = "0.7.7"
+        |      val munit = "0.7.8"
         |    }
         |    val munit           = "org.scalameta"  %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta"  %% "munit-scalacheck" % Version.munit
