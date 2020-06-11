@@ -86,8 +86,8 @@ private object Template {
         |    object Version {
         |      val munit = "0.7.8"
         |    }
-        |    val munit           = "org.scalameta"  %% "munit"            % Version.munit
-        |    val munitScalaCheck = "org.scalameta"  %% "munit-scalacheck" % Version.munit
+        |    val munit           = "org.scalameta" %% "munit"            % Version.munit
+        |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
         |  }
         |
         |// *****************************************************************************
