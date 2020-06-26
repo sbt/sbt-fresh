@@ -57,9 +57,9 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.13.2",""".stripMargin
+           |    // scalaVersion := "2.13.3",""".stripMargin
       else
-        """scalaVersion := "2.13.2","""
+        """scalaVersion := "2.13.3","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -228,7 +228,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.13.2
+       |  - 2.13.3
        |
        |jdk:
        |  - openjdk8
