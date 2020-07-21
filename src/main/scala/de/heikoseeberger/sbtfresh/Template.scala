@@ -211,7 +211,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.6.3"
+    """|version = "2.6.4"
        |
        |preset = "defaultWithAlign"
        |
