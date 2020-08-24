@@ -6,7 +6,7 @@ lazy val `sbt-fresh` =
   project
     .in(file("."))
     .enablePlugins(AutomateHeaderPlugin, SbtPlugin)
-    .settings(settings)
+    .settings(commonSettings)
     .settings(
       addSbtPlugin(library.sbtGit),
     )
@@ -28,11 +28,6 @@ lazy val library =
 // Settings
 // *****************************************************************************
 
-lazy val settings =
-  commonSettings ++
-  scalafmtSettings ++
-  sbtScriptedSettings
-
 lazy val commonSettings =
   Seq(
     // scalaVersion from .travis.yml via sbt-travisci
@@ -53,17 +48,9 @@ lazy val commonSettings =
     Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
     Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
     publishMavenStyle := false,
-)
-
-lazy val scalafmtSettings =
-  Seq(
     scalafmtOnCompile := true,
-  )
-
-lazy val sbtScriptedSettings =
-  Seq(
     scriptedLaunchOpts ++= Seq(
       "-Xmx1024M",
       s"-Dplugin.version=${version.value}",
     )
-  )
+)
