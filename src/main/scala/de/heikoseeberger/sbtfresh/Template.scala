@@ -84,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val munit = "0.7.11"
+        |      val munit = "0.7.12"
         |    }
         |    val munit           = "org.scalameta" %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
@@ -166,7 +166,7 @@ private object Template {
     val travisPlugin =
       if (setUpTravis)
         """|
-           |addSbtPlugin("com.dwijnand"      % "sbt-travisci"    % "1.2.0")""".stripMargin
+           |addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.2.0")""".stripMargin
       else
         ""
     val wartRemoverPlugin =
@@ -176,9 +176,9 @@ private object Template {
       else
         ""
 
-    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"      % "4.1.1")${travisPlugin}
-        |addSbtPlugin("de.heikoseeberger" % "sbt-header"      % "5.6.0")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt"    % "2.4.2")${wartRemoverPlugin}
+    s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"   % "4.1.1")
+        |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "5.6.0")
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.2")${travisPlugin}${wartRemoverPlugin}
         |""".stripMargin
   }
 
@@ -215,13 +215,11 @@ private object Template {
        |
        |preset = "defaultWithAlign"
        |
-       |danglingParentheses.preset        = true
-       |indentOperator.preset             = "spray"
-       |maxColumn                         = 100
-       |newlines.alwaysBeforeMultilineDef = true
-       |rewrite.rules                     = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
-       |spaces.inImportCurlyBraces        = true
-       |unindentTopLevelOperators         = true
+       |maxColumn                  = 100
+       |indentOperator.preset      = "spray"
+       |unindentTopLevelOperators  = true
+       |spaces.inImportCurlyBraces = true
+       |rewrite.rules              = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
        |""".stripMargin
 
   def travisYml: String =
