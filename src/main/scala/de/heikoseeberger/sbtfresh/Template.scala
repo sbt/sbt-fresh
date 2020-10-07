@@ -118,6 +118,7 @@ private object Template {
        |lib_managed
        |project/project
        |target
+       |.bsp
        |
        |# Worksheets (Eclipse or IntelliJ)
        |*.sc
@@ -211,7 +212,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.7.3"
+    """|version = "2.7.4"
        |
        |preset = "defaultWithAlign"
        |
