@@ -221,6 +221,7 @@ private object Template {
        |unindentTopLevelOperators  = true
        |spaces.inImportCurlyBraces = true
        |rewrite.rules              = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
+       |docstrings.blankFirstLine  = true
        |""".stripMargin
 
   def travisYml: String =
