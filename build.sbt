@@ -52,5 +52,5 @@ lazy val commonSettings =
     scriptedLaunchOpts ++= Seq(
       "-Xmx1024M",
       s"-Dplugin.version=${version.value}",
-    )
+    ),
 )
