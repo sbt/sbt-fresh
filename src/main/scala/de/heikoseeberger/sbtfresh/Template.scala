@@ -57,9 +57,9 @@ private object Template {
     val scalaVersion =
       if (setUpTravis)
         """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.13.4",""".stripMargin
+           |    // scalaVersion := "2.13.5",""".stripMargin
       else
-        """scalaVersion := "2.13.4","""
+        """scalaVersion := "2.13.5","""
 
     s"""|// *****************************************************************************
         |// Projects
@@ -84,7 +84,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val munit = "0.7.21"
+        |      val munit = "0.7.22"
         |    }
         |    val munit           = "org.scalameta" %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
@@ -228,7 +228,7 @@ private object Template {
     """|language: scala
        |
        |scala:
-       |  - 2.13.4
+       |  - 2.13.5
        |
        |jdk:
        |  - openjdk8
