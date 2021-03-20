@@ -44,6 +44,30 @@ private object Template {
     }
 
     s"""|// *****************************************************************************
+        |// Build settings
+        |// *****************************************************************************
+        |
+        |inThisBuild(
+        |  Seq(
+        |    organization := "$organization",
+        |    organizationName := "$author",
+        |    startYear := Some($year),$licenseSettings
+        |    scalaVersion := "2.13.5",
+        |    scalacOptions ++= Seq(
+        |      "-unchecked",
+        |      "-deprecation",
+        |      "-language:_",
+        |      "-encoding",
+        |      "UTF-8",
+        |      "-Ywarn-unused:imports",
+        |    ),
+        |    testFrameworks += new TestFramework("munit.Framework"),
+        |    scalafmtOnCompile := true,
+        |    dynverSeparator := "_", // the default `+` is not compatible with docker tags
+        |  )
+        |)
+        |
+        |// *****************************************************************************
         |// Projects
         |// *****************************************************************************
         |
@@ -60,6 +84,19 @@ private object Template {
         |    )
         |
         |// *****************************************************************************
+        |// Project settings
+        |// *****************************************************************************
+        |
+        |lazy val commonSettings =
+        |  Seq(
+        |    // Also (automatically) format build definition together with sources
+        |    Compile / scalafmt := {
+        |      val _ = (Compile / scalafmtSbt).value
+        |      (Compile / scalafmt).value
+        |    }
+        |  )
+        |
+        |// *****************************************************************************
         |// Library dependencies
         |// *****************************************************************************
         |
@@ -71,27 +108,6 @@ private object Template {
         |    val munit           = "org.scalameta" %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
         |  }
-        |
-        |// *****************************************************************************
-        |// Settings
-        |// *****************************************************************************
-        |
-        |lazy val commonSettings =
-        |  Seq(
-        |    scalaVersion := "2.13.5",
-        |    organization := "$organization",
-        |    organizationName := "$author",
-        |    startYear := Some($year),$licenseSettings
-        |    scalacOptions ++= Seq(
-        |      "-unchecked",
-        |      "-deprecation",
-        |      "-language:_",
-        |      "-encoding", "UTF-8",
-        |      "-Ywarn-unused:imports",
-        |    ),
-        |    testFrameworks += new TestFramework("munit.Framework"),
-        |    scalafmtOnCompile := true,
-        |)
         |""".stripMargin
   }
 

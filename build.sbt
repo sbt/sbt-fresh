@@ -15,11 +15,11 @@ inThisBuild(
       "-language:_",
       "-encoding",
       "UTF-8",
-      "-Ywarn-unused:imports"
+      "-Ywarn-unused:imports",
     ),
     testFrameworks += new TestFramework("munit.Framework"),
     scalafmtOnCompile := true,
-    dynverSeparator := "_", // the default `+` is not compatible with docker tags,
+    dynverSeparator := "_", // the default `+` is not compatible with docker tags
   )
 )
 
