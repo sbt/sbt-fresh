@@ -15,7 +15,6 @@
  */
 
 package de.heikoseeberger.sbtfresh
-package license
 
 final case class License(id: String, name: String, url: String)
 

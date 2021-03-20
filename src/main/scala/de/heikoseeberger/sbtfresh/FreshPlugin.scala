@@ -15,8 +15,6 @@
  */
 
 package de.heikoseeberger.sbtfresh
-
-import de.heikoseeberger.sbtfresh.license.License
 import sbt.complete.{ DefaultParsers, Parser }
 import sbt.plugins.JvmPlugin
 import sbt.{ AutoPlugin, Command, Keys, Project, SettingKey, State, ThisBuild, settingKey }
@@ -42,23 +40,15 @@ object FreshPlugin extends AutoPlugin {
     val freshSetUpGit: SettingKey[Boolean] =
       settingKey("Initialize a Git repo and create an initial commit – `true` by default")
 
-    val freshSetUpTravis: SettingKey[Boolean] =
-      settingKey("Configure Travis for Continuous Integration - `false` by default")
-
-    val freshSetUpWartremover: SettingKey[Boolean] =
-      settingKey("Include the sbt wartremover plugin - `false` by default")
-
     private def licenseIds = License.values.toVector.sortBy(_.id).mkString(", ")
   }
 
   private final object Arg {
-    final val Organization     = "organization"
-    final val Name             = "name"
-    final val Author           = "author"
-    final val License          = "license"
-    final val SetUpGit         = "setUpGit"
-    final val SetUpTravis      = "setUpTravis"
-    final val SetUpWartremover = "setUpWartremover"
+    final val Organization = "organization"
+    final val Name         = "name"
+    final val Author       = "author"
+    final val License      = "license"
+    final val SetUpGit     = "setUpGit"
   }
 
   private final case class Args(
@@ -66,9 +56,7 @@ object FreshPlugin extends AutoPlugin {
       name: Option[String],
       author: Option[String],
       license: Option[License],
-      setUpGit: Option[Boolean],
-      setUpTravis: Option[Boolean],
-      setUpWartremover: Option[Boolean]
+      setUpGit: Option[Boolean]
   )
 
   private final val DefaultOrganization = "default"
@@ -84,34 +72,34 @@ object FreshPlugin extends AutoPlugin {
 
     super.projectSettings ++
     Vector(
-      Keys.commands += Command("fresh")(parser)(effect),
+      Keys.commands += Command("fresh")(_ => parser)(effect),
       freshOrganization := DefaultOrganization,
       freshName := Keys.baseDirectory.value.getName,
       freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
       freshLicense := DefaultLicense,
       freshSetUpGit := true,
-      freshSetUpTravis := false,
-      freshSetUpWartremover := false
     )
   }
 
-  private def parser(state: State) = {
+  private def parser = {
     import DefaultParsers._
+
     def arg[A](name: String, parser: Parser[A]) = Space ~> name.decapitalize ~> "=" ~> parser
+
     val licenseParser =
       License.values.toVector
         .sortBy(_.id)
         .map(l => (l.id: Parser[String]).map(_ => l))
         .reduceLeft(_ | _)
+
     val args =
       arg(Arg.Organization, NotQuoted).? ~
       arg(Arg.Name, NotQuoted).? ~
       arg(Arg.Author, token(StringBasic)).? ~
       arg(Arg.License, licenseParser).? ~
-      arg(Arg.SetUpGit, Bool).? ~
-      arg(Arg.SetUpTravis, Bool).? ~
-      arg(Arg.SetUpWartremover, Bool).?
-    args.map { case o ~ n ~ a ~ l ~ g ~ t ~ wr => Args(o, n, a, l, g, t, wr) }
+      arg(Arg.SetUpGit, Bool).?
+
+    args.map { case o ~ n ~ a ~ l ~ g => Args(o, n, a, l, g) }
   }
 
   private def effect(state: State, args: Args) = {
@@ -119,25 +107,22 @@ object FreshPlugin extends AutoPlugin {
 
     def setting[A](key: SettingKey[A]) = Project.extract(state).get(key)
 
-    val buildDir         = setting(Keys.baseDirectory.in(ThisBuild)).toPath
-    val organization     = args.organization.getOrElse(setting(freshOrganization))
-    val name             = args.name.getOrElse(setting(freshName))
-    val author           = args.author.getOrElse(setting(freshAuthor))
-    val license          = args.license.orElse(setting(freshLicense))
-    val setUpGit         = args.setUpGit.getOrElse(setting(freshSetUpGit))
-    val setUpTravis      = args.setUpTravis.getOrElse(setting(freshSetUpTravis))
-    val setUpWartremover = args.setUpWartremover.getOrElse(setting(freshSetUpWartremover))
+    val buildDir     = setting(Keys.baseDirectory.in(ThisBuild)).toPath
+    val organization = args.organization.getOrElse(setting(freshOrganization))
+    val name         = args.name.getOrElse(setting(freshName))
+    val author       = args.author.getOrElse(setting(freshAuthor))
+    val license      = args.license.orElse(setting(freshLicense))
+    val setUpGit     = args.setUpGit.getOrElse(setting(freshSetUpGit))
 
     val fresh = new Fresh(buildDir, organization, name, author, license)
     fresh.writeBuildProperties()
-    fresh.writeBuildSbt(setUpTravis, setUpWartremover)
+    fresh.writeBuildSbt()
     fresh.writeGitignore()
     fresh.writeLicense()
     fresh.writeNotice()
-    fresh.writePlugins(setUpTravis, setUpWartremover)
+    fresh.writePlugins()
     fresh.writeReadme()
     fresh.writeScalafmt()
-    if (setUpTravis) fresh.writeTravisYml()
     if (setUpGit) fresh.initialCommit()
 
     state.reboot(true)

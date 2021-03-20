@@ -15,8 +15,6 @@
  */
 
 package de.heikoseeberger.sbtfresh
-
-import de.heikoseeberger.sbtfresh.license.License
 import java.nio.charset.StandardCharsets.UTF_8
 import java.nio.file.{ Files, Path }
 import java.nio.file.StandardCopyOption.REPLACE_EXISTING
@@ -29,15 +27,8 @@ private final class Fresh(
     author: String,
     license: Option[License]
 ) {
-
   require(organization.nonEmpty, "organization must not be empty!")
   require(name.nonEmpty, "name must not be empty!")
-
-  private val packageSegments = {
-    val all  = (organization.segments ++ name.segments).map(_.toLowerCase)
-    val tail = all.tail.zip(all).collect { case (s1, s2) if s1 != s2 => s1 }
-    all.head +: tail
-  }
 
   def initialCommit(): Unit = {
     val git = Git.init().setDirectory(buildDir.toFile).call()
@@ -48,17 +39,14 @@ private final class Fresh(
   def writeBuildProperties(): Path =
     write("project/build.properties", Template.buildProperties)
 
-  def writeBuildSbt(setUpTravis: Boolean, setUpWartremover: Boolean): Path =
+  def writeBuildSbt(): Path =
     write(
       "build.sbt",
       Template.buildSbt(
         organization,
         name,
-        packageSegments,
         author,
         license,
-        setUpTravis,
-        setUpWartremover
       )
     )
 
@@ -66,13 +54,15 @@ private final class Fresh(
     write(".gitignore", Template.gitignore)
 
   def writeLicense(): Unit =
-    license.foreach(l => copy("LICENSE", l.id))
+    license.foreach { case License(id, _, _) =>
+      Files.copy(getClass.getResourceAsStream(s"/$id"), resolve("LICENSE"), REPLACE_EXISTING)
+    }
 
   def writeNotice(): Path =
     write("NOTICE", Template.notice(author))
 
-  def writePlugins(setUpTravis: Boolean, setUpWartremover: Boolean): Path =
-    write("project/plugins.sbt", Template.plugins(setUpTravis, setUpWartremover))
+  def writePlugins(): Path =
+    write("project/plugins.sbt", Template.plugins)
 
   def writeReadme(): Path =
     write("README.md", Template.readme(name, license))
@@ -80,14 +70,8 @@ private final class Fresh(
   def writeScalafmt(): Path =
     write(".scalafmt.conf", Template.scalafmtConf)
 
-  def writeTravisYml(): Path =
-    write(".travis.yml", Template.travisYml)
-
   private def write(path: String, content: String) =
     Files.write(resolve(path), content.getBytes(UTF_8))
-
-  private def copy(path: String, name: String) =
-    Files.copy(getClass.getResourceAsStream(s"/$name"), resolve(path), REPLACE_EXISTING)
 
   private def resolve(path: String) = {
     val resolved = buildDir.resolve(path)
