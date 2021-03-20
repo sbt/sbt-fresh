@@ -1,4 +1,29 @@
 // *****************************************************************************
+// Build settings
+// *****************************************************************************
+
+inThisBuild(
+  Seq(
+    organization := "de.heikoseeberger",
+    organizationName := "Heiko Seeberger",
+    startYear := Some(2016),
+    licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")),
+    // scalaVersion defined by sbt
+    scalacOptions ++= Seq(
+      "-unchecked",
+      "-deprecation",
+      "-language:_",
+      "-encoding",
+      "UTF-8",
+      "-Ywarn-unused:imports",
+    ),
+    testFrameworks += new TestFramework("munit.Framework"),
+    scalafmtOnCompile := true,
+    dynverSeparator := "_", // the default `+` is not compatible with docker tags
+  )
+)
+
+// *****************************************************************************
 // Projects
 // *****************************************************************************
 
@@ -9,7 +34,25 @@ lazy val `sbt-fresh` =
     .settings(commonSettings)
     .settings(
       addSbtPlugin(library.sbtGit),
+      publishMavenStyle := false,
+      scriptedLaunchOpts ++= Seq(
+        "-Xmx1024M",
+        s"-Dplugin.version=${version.value}",
+      ),
     )
+
+// *****************************************************************************
+// Project settings
+// *****************************************************************************
+
+lazy val commonSettings =
+  Seq(
+    // Also (automatically) format build definition together with sources
+    Compile / scalafmt := {
+      val _ = (Compile / scalafmtSbt).value
+      (Compile / scalafmt).value
+    }
+  )
 
 // *****************************************************************************
 // Library dependencies
@@ -22,35 +65,3 @@ lazy val library =
     }
     val sbtGit = "com.typesafe.sbt" % "sbt-git" % Version.sbtGit
   }
-
-
-// *****************************************************************************
-// Settings
-// *****************************************************************************
-
-lazy val commonSettings =
-  Seq(
-    // scalaVersion from .travis.yml via sbt-travisci
-    // scalaVersion := "2.12.3",
-    organization := "de.heikoseeberger",
-    organizationName := "Heiko Seeberger",
-    startYear := Some(2016),
-    licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")),
-    scalacOptions ++= Seq(
-      "-unchecked",
-      "-deprecation",
-      "-language:_",
-      "-target:jvm-1.8",
-      "-encoding", "UTF-8",
-      "-Ypartial-unification",
-      "-Ywarn-unused-import"
-    ),
-    Compile / unmanagedSourceDirectories := Seq((Compile / scalaSource).value),
-    Test / unmanagedSourceDirectories := Seq((Test / scalaSource).value),
-    publishMavenStyle := false,
-    scalafmtOnCompile := true,
-    scriptedLaunchOpts ++= Seq(
-      "-Xmx1024M",
-      s"-Dplugin.version=${version.value}",
-    ),
-)

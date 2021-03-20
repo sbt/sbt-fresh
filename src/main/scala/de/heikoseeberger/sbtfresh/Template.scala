@@ -16,7 +16,6 @@
 
 package de.heikoseeberger.sbtfresh
 
-import de.heikoseeberger.sbtfresh.license.License
 import java.time.LocalDate.now
 
 private object Template {
@@ -30,11 +29,8 @@ private object Template {
   def buildSbt(
       organization: String,
       name: String,
-      packageSegments: Vector[String],
       author: String,
       license: Option[License],
-      setUpTravis: Boolean,
-      setUpWartremover: Boolean
   ): String = {
     val nameIdentifier = if (name.segments.mkString == name) name else s"`$name`"
 
@@ -47,21 +43,31 @@ private object Template {
       license.map(settings).getOrElse("")
     }
 
-    val wartremoverSettings =
-      if (setUpWartremover)
-        """|,
-           |    Compile / compile / wartremoverWarnings ++= Warts.unsafe""".stripMargin
-      else
-        ""
-
-    val scalaVersion =
-      if (setUpTravis)
-        """|// scalaVersion from .travis.yml via sbt-travisci
-           |    // scalaVersion := "2.13.5",""".stripMargin
-      else
-        """scalaVersion := "2.13.5","""
-
     s"""|// *****************************************************************************
+        |// Build settings
+        |// *****************************************************************************
+        |
+        |inThisBuild(
+        |  Seq(
+        |    organization := "$organization",
+        |    organizationName := "$author",
+        |    startYear := Some($year),$licenseSettings
+        |    scalaVersion := "2.13.5",
+        |    scalacOptions ++= Seq(
+        |      "-unchecked",
+        |      "-deprecation",
+        |      "-language:_",
+        |      "-encoding",
+        |      "UTF-8",
+        |      "-Ywarn-unused:imports",
+        |    ),
+        |    testFrameworks += new TestFramework("munit.Framework"),
+        |    scalafmtOnCompile := true,
+        |    dynverSeparator := "_", // the default `+` is not compatible with docker tags
+        |  )
+        |)
+        |
+        |// *****************************************************************************
         |// Projects
         |// *****************************************************************************
         |
@@ -78,6 +84,19 @@ private object Template {
         |    )
         |
         |// *****************************************************************************
+        |// Project settings
+        |// *****************************************************************************
+        |
+        |lazy val commonSettings =
+        |  Seq(
+        |    // Also (automatically) format build definition together with sources
+        |    Compile / scalafmt := {
+        |      val _ = (Compile / scalafmtSbt).value
+        |      (Compile / scalafmt).value
+        |    }
+        |  )
+        |
+        |// *****************************************************************************
         |// Library dependencies
         |// *****************************************************************************
         |
@@ -89,27 +108,6 @@ private object Template {
         |    val munit           = "org.scalameta" %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
         |  }
-        |
-        |// *****************************************************************************
-        |// Settings
-        |// *****************************************************************************
-        |
-        |lazy val commonSettings =
-        |  Seq(
-        |    $scalaVersion
-        |    organization := "$organization",
-        |    organizationName := "$author",
-        |    startYear := Some($year),$licenseSettings
-        |    scalacOptions ++= Seq(
-        |      "-unchecked",
-        |      "-deprecation",
-        |      "-language:_",
-        |      "-encoding", "UTF-8",
-        |      "-Ywarn-unused:imports",
-        |    ),
-        |    testFrameworks += new TestFramework("munit.Framework"),
-        |    scalafmtOnCompile := true$wartremoverSettings,
-        |)
         |""".stripMargin
   }
 
@@ -163,25 +161,11 @@ private object Template {
     s"""|Copyright $year $author
         |""".stripMargin
 
-  def plugins(setUpTravis: Boolean, setUpWartremover: Boolean): String = {
-    val travisPlugin =
-      if (setUpTravis)
-        """|
-           |addSbtPlugin("com.dwijnand"      % "sbt-travisci" % "1.2.0")""".stripMargin
-      else
-        ""
-    val wartRemoverPlugin =
-      if (setUpWartremover)
-        """|
-           |addSbtPlugin("org.wartremover"   % "sbt-wartremover" % "2.4.9")""".stripMargin
-      else
-        ""
-
+  def plugins: String =
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"   % "4.1.1")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "5.6.0")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.2")${travisPlugin}${wartRemoverPlugin}
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.2")
         |""".stripMargin
-  }
 
   def readme(name: String, license: Option[License]): String = {
     val licenseText = {
@@ -222,15 +206,6 @@ private object Template {
        |spaces.inImportCurlyBraces = true
        |rewrite.rules              = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
        |docstrings.blankFirstLine  = true
-       |""".stripMargin
-
-  def travisYml: String =
-    """|language: scala
-       |
-       |scala:
-       |  - 2.13.5
-       |
-       |jdk:
-       |  - openjdk8
+       |trailingCommas             = preserve
        |""".stripMargin
 }
