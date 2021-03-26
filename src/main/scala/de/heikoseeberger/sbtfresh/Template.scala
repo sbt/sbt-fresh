@@ -93,7 +93,7 @@ private object Template {
         |    Compile / scalafmt := {
         |      val _ = (Compile / scalafmtSbt).value
         |      (Compile / scalafmt).value
-        |    }
+        |    },
         |  )
         |
         |// *****************************************************************************

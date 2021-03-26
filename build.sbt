@@ -51,7 +51,7 @@ lazy val commonSettings =
     Compile / scalafmt := {
       val _ = (Compile / scalafmtSbt).value
       (Compile / scalafmt).value
-    }
+    },
   )
 
 // *****************************************************************************
