@@ -8,6 +8,21 @@ inThisBuild(
     organizationName := "Heiko Seeberger",
     startYear := Some(2016),
     licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0")),
+    homepage := Some(url("https://github.com/sbt/sbt-fresh")),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/sbt/sbt-fresh"),
+        "git@github.com:sbt/sbt-fresh.git"
+      )
+    ),
+    developers := List(
+      Developer(
+        "hseeberger",
+        "Heiko Seeberger",
+        "mail@heikoseeberger.rocks",
+        url("https://github.com/hseeberger")
+      )
+    ),
     // scalaVersion defined by sbt
     scalacOptions ++= Seq(
       "-unchecked",
