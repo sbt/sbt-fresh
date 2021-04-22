@@ -23,6 +23,7 @@ inThisBuild(
         url("https://github.com/hseeberger")
       )
     ),
+    publishMavenStyle := true,
     // scalaVersion defined by sbt
     scalacOptions ++= Seq(
       "-unchecked",
