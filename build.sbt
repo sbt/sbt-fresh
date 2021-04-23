@@ -23,7 +23,6 @@ inThisBuild(
         url("https://github.com/hseeberger")
       )
     ),
-    publishMavenStyle := true,
     // scalaVersion defined by sbt
     scalacOptions ++= Seq(
       "-unchecked",
@@ -50,7 +49,6 @@ lazy val `sbt-fresh` =
     .settings(commonSettings)
     .settings(
       addSbtPlugin(library.sbtGit),
-      publishMavenStyle := false,
       scriptedLaunchOpts ++= Seq(
         "-Xmx1024M",
         s"-Dplugin.version=${version.value}",
