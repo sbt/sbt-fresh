@@ -1,5 +1,7 @@
 # sbt-fresh #
 
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
 sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project: it
 creates an sbt build according to established best practices, creates a useful
 package object for the root package, initializes a Git repository, creates an
