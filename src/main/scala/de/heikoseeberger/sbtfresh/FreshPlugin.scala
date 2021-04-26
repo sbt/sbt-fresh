@@ -107,7 +107,7 @@ object FreshPlugin extends AutoPlugin {
 
     def setting[A](key: SettingKey[A]) = Project.extract(state).get(key)
 
-    val buildDir     = setting(Keys.baseDirectory.in(ThisBuild)).toPath
+    val buildDir     = setting(ThisBuild / Keys.baseDirectory).toPath
     val organization = args.organization.getOrElse(setting(freshOrganization))
     val name         = args.name.getOrElse(setting(freshName))
     val author       = args.author.getOrElse(setting(freshAuthor))
