@@ -1,5 +1,7 @@
 # sbt-fresh #
 
+![Build](https://img.shields.io/github/workflow/status/sbt/sbt-fresh/Test)
+![Maven Central](https://img.shields.io/maven-central/v/de.heikoseeberger/sbt-fresh)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 sbt-fresh is a plugin for sbt to scaffold an opinionated fresh sbt project: it
