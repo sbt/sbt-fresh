@@ -23,7 +23,7 @@ private object Template {
   private val year = now().getYear
 
   def buildProperties: String =
-    """|sbt.version = 1.5.2
+    """|sbt.version = 1.5.3
        |""".stripMargin
 
   def buildSbt(
@@ -195,9 +195,10 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "2.7.5"
+    """|version = "3.0.0-RC4"
        |
-       |preset = "defaultWithAlign"
+       |preset         = "defaultWithAlign"
+       |runner.dialect = "scala3"
        |
        |maxColumn                  = 100
        |indentOperator.preset      = "spray"
@@ -205,6 +206,6 @@ private object Template {
        |spaces.inImportCurlyBraces = true
        |rewrite.rules              = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
        |docstrings.blankFirstLine  = true
-       |trailingCommas             = preserve
+       |trailingCommas             = "preserve"
        |""".stripMargin
 }
