@@ -33,7 +33,7 @@ private final class Fresh(
   def initialCommit(): Unit = {
     val git = Git.init().setDirectory(buildDir.toFile).call()
     git.add().addFilepattern(".").call()
-    git.commit().setMessage("Fresh project, created with sbt-fresh").call()
+    git.commit().setMessage("build: fresh project, created with sbt-fresh").call()
   }
 
   def writeBuildProperties(): Path =
