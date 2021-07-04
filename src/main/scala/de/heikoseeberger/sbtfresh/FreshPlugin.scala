@@ -74,10 +74,10 @@ object FreshPlugin extends AutoPlugin {
     Vector(
       Keys.commands += Command("fresh")(_ => parser)(effect),
       freshOrganization := DefaultOrganization,
-      freshName := Keys.baseDirectory.value.getName,
-      freshAuthor := sys.props.getOrElse("user.name", DefaultAuthor),
-      freshLicense := DefaultLicense,
-      freshSetUpGit := true,
+      freshName         := Keys.baseDirectory.value.getName,
+      freshAuthor       := sys.props.getOrElse("user.name", DefaultAuthor),
+      freshLicense      := DefaultLicense,
+      freshSetUpGit     := true,
     )
   }
 
