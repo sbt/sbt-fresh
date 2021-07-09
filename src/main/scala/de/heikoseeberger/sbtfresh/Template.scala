@@ -163,7 +163,7 @@ private object Template {
   def plugins: String =
     s"""|addSbtPlugin("com.dwijnand"      % "sbt-dynver"   % "4.1.1")
         |addSbtPlugin("de.heikoseeberger" % "sbt-header"   % "5.6.0")
-        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.2")
+        |addSbtPlugin("org.scalameta"     % "sbt-scalafmt" % "2.4.3")
         |""".stripMargin
 
   def readme(name: String, license: Option[License]): String = {
