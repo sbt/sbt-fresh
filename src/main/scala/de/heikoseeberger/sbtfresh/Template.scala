@@ -58,6 +58,8 @@ private object Template {
         |      "-unchecked",
         |      "-rewrite",
         |      "-indent",
+        |      "-pagewidth",
+        |      "100",
         |      "-source",
         |      "future",
         |      "-Xfatal-warnings",
