@@ -106,7 +106,7 @@ private object Template {
         |lazy val library =
         |  new {
         |    object Version {
-        |      val munit = "0.7.28"
+        |      val munit = "0.7.29"
         |    }
         |    val munit           = "org.scalameta" %% "munit"            % Version.munit
         |    val munitScalaCheck = "org.scalameta" %% "munit-scalacheck" % Version.munit
@@ -199,7 +199,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "3.0.0"
+    """|version = "3.0.1"
        |
        |preset         = "defaultWithAlign"
        |runner.dialect = "scala3"
