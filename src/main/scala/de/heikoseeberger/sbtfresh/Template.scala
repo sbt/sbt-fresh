@@ -52,7 +52,7 @@ private object Template {
         |    organization := "$organization",
         |    organizationName := "$author",
         |    startYear := Some($year),$licenseSettings
-        |    scalaVersion := "3.0.2",
+        |    scalaVersion := "3.1.0",
         |    scalacOptions ++= Seq(
         |      "-deprecation",
         |      "-unchecked",
