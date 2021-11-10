@@ -199,7 +199,7 @@ private object Template {
   }
 
   def scalafmtConf: String =
-    """|version = "3.0.8"
+    """|version = "3.1.0"
        |
        |preset         = "defaultWithAlign"
        |runner.dialect = "scala3"
