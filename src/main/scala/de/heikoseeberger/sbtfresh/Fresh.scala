@@ -54,8 +54,9 @@ private final class Fresh(
     write(".gitignore", Template.gitignore)
 
   def writeLicense(): Unit =
-    license.foreach { case License(id, _, _) =>
-      Files.copy(getClass.getResourceAsStream(s"/$id"), resolve("LICENSE"), REPLACE_EXISTING)
+    license.foreach {
+      case License(id, _, _) =>
+        Files.copy(getClass.getResourceAsStream(s"/$id"), resolve("LICENSE"), REPLACE_EXISTING)
     }
 
   def writeNotice(): Path =
