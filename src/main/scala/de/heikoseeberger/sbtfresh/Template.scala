@@ -204,12 +204,13 @@ private object Template {
        |preset         = "defaultWithAlign"
        |runner.dialect = "scala3"
        |
-       |maxColumn                  = 100
-       |indentOperator.preset      = "spray"
-       |unindentTopLevelOperators  = true
-       |spaces.inImportCurlyBraces = true
-       |rewrite.rules              = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
-       |docstrings.blankFirstLine  = true
-       |trailingCommas             = "preserve"
+       |maxColumn                        = 100
+       |indentOperator.preset            = "spray"
+       |unindentTopLevelOperators        = true
+       |spaces.inImportCurlyBraces       = true
+       |rewrite.rules                    = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
+       |docstrings.blankFirstLine        = true
+       |trailingCommas                   = "preserve"
+       |newlines.beforeCurlyLambdaParams = "multilineWithCaseOnly"
        |""".stripMargin
 }
