@@ -24,7 +24,7 @@ You can define the following settings in your global build definition, which
 most probably sits at `~/.sbt/1.0/build.sbt`:
 
 ``` scala
-import de.heikoseeberger.sbtfresh.license.License // Only needed for `freshLicense` setting
+import de.heikoseeberger.sbtfresh.License  // Only needed for `freshLicense` setting
 
 freshOrganization     := "doe.john"        // Organization – "default" by default
 freshAuthor           := "John Doe"        // Author – value of "user.name" system property or "default" by default
