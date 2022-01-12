@@ -116,12 +116,12 @@ private object Template {
 
   def gitignore: String =
     """|# sbt
+       |.bsp
        |lib_managed
        |project/project
        |target
-       |.bsp
        |
-       |# Worksheets (Eclipse or IntelliJ)
+       |# Worksheets
        |*.sc
        |
        |# Eclipse
@@ -138,8 +138,11 @@ private object Template {
        |
        |# ENSIME
        |.ensime
-       |.ensime_lucene
        |.ensime_cache
+       |.ensime_lucene
+       |
+       |# VSCode
+       |.vscode
        |
        |# Mac
        |.DS_Store
@@ -156,8 +159,9 @@ private object Template {
        |.java-version
        |
        |# Metals
-       |.metals
        |.bloop
+       |.metals
+       |metals.sbt
        |""".stripMargin
 
   def notice(author: String): String =
