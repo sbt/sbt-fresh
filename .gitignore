@@ -1,10 +1,10 @@
 # sbt
+.bsp
 lib_managed
 project/project
 target
-.bsp
 
-# Worksheets (Eclipse or IntelliJ)
+# Worksheets
 *.sc
 
 # Eclipse
@@ -24,10 +24,14 @@ target
 .ensime_cache
 .ensime_lucene
 
+# VSCode
+.vscode
+
 # Mac
 .DS_Store
 
-# Akka Persistence
+# Akka
+ddata*
 journal
 snapshots
 
@@ -36,3 +40,8 @@ snapshots
 
 # jenv
 .java-version
+
+# Metals
+.bloop
+.metals
+metals.sbt
