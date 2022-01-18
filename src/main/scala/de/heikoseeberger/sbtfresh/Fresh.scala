@@ -68,7 +68,10 @@ private final class Fresh(
   def writeReadme(): Path =
     write("README.md", Template.readme(name, license))
 
-  def writeScalafmt(): Path =
+  def writeScalafixConf(): Path =
+    write(".scalafix.conf", Template.scalafixConf)
+
+  def writeScalafmtConf(): Path =
     write(".scalafmt.conf", Template.scalafmtConf)
 
   private def write(path: String, content: String) =

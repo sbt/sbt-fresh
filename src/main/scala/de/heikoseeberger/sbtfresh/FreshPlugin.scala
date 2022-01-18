@@ -122,7 +122,8 @@ object FreshPlugin extends AutoPlugin {
     fresh.writeNotice()
     fresh.writePlugins()
     fresh.writeReadme()
-    fresh.writeScalafmt()
+    fresh.writeScalafixConf()
+    fresh.writeScalafmtConf()
     if (setUpGit) fresh.initialCommit()
 
     state.reboot(true)

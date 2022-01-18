@@ -1,5 +1,6 @@
 > fresh organization=org name=acme setUpGit=true
 $ exists .gitignore
+$ exists .scalafix.conf
 $ exists .scalafmt.conf
 $ exists build.sbt
 $ exists LICENSE

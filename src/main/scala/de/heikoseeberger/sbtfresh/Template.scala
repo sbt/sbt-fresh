@@ -202,6 +202,20 @@ private object Template {
         |""".stripMargin
   }
 
+  def scalafixConf: String =
+    """|OrganizeImports {
+       |  blankLines = Manual
+       |  coalesceToWildcardImportThreshold = null
+       |  expandRelative = false
+       |  groupExplicitlyImportedImplicitsSeparately = false
+       |  groupedImports = AggressiveMerge
+       |  groups = [ "*" ]
+       |  importSelectorsOrder = Ascii
+       |  importsOrder = Ascii
+       |  preset = DEFAULT
+       |  removeUnused = true
+       |}""".stripMargin
+
   def scalafmtConf: String =
     """|version = "3.3.1"
        |
@@ -212,7 +226,8 @@ private object Template {
        |indentOperator.preset            = "spray"
        |unindentTopLevelOperators        = true
        |spaces.inImportCurlyBraces       = true
-       |rewrite.rules                    = ["AsciiSortImports", "RedundantBraces", "RedundantParens"]
+       |rewrite.rules                    = ["Imports", "RedundantBraces", "RedundantParens"]
+       |rewrite.imports.sort             = "ascii"
        |docstrings.blankFirstLine        = true
        |trailingCommas                   = "preserve"
        |newlines.beforeCurlyLambdaParams = "multilineWithCaseOnly"
