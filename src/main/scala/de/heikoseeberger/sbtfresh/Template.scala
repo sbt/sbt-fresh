@@ -217,14 +217,14 @@ private object Template {
        |}""".stripMargin
 
   def scalafmtConf: String =
-    """|version = "3.3.2"
+    """|version = "3.4.0"
        |
        |preset         = "defaultWithAlign"
        |runner.dialect = "scala3"
        |
        |maxColumn                        = 100
        |indentOperator.preset            = "spray"
-       |unindentTopLevelOperators        = true
+       |indentOperator.exemptScope       = "all"
        |spaces.inImportCurlyBraces       = true
        |rewrite.rules                    = ["Imports", "RedundantBraces", "RedundantParens"]
        |rewrite.imports.sort             = "ascii"
