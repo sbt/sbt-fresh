@@ -217,7 +217,7 @@ private object Template {
        |}""".stripMargin
 
   def scalafmtConf: String =
-    """|version = "3.4.0"
+    """|version = "3.4.2"
        |
        |preset         = "defaultWithAlign"
        |runner.dialect = "scala3"
