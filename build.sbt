@@ -75,7 +75,7 @@ lazy val commonSettings =
 lazy val library =
   new {
     object Version {
-      val sbtGit = "1.0.2",
+      val sbtGit = "2.0.0",
     }
-    val sbtGit = "com.typesafe.sbt" % "sbt-git" % Version.sbtGit
+    val sbtGit = "com.github.sbt" % "sbt-git" % Version.sbtGit
   }
